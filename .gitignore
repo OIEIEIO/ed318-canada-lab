@@ -1,0 +1,10 @@
+/target/
+*.zip
+*.tar
+*.tar.gz
+*.7z
+*.tmp
+*.bak
+.DS_Store
+.idea/
+.vscode/
