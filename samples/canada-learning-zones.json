@@ -1,0 +1,68 @@
+{
+  "metadata": {
+    "datasetId": "CA-ED318-LEARNING-2026-001",
+    "standard": "ED-318-inspired learning model",
+    "profile": "Canada mock profile v0.1",
+    "provider": "Local learning dataset - not Transport Canada",
+    "issued": "2026-07-29T16:00:00Z",
+    "validFrom": "2026-07-29T00:00:00Z",
+    "validTo": "2027-07-29T00:00:00Z",
+    "description": "Synthetic zone near Kingsville, Ontario for parser development only.",
+    "canadianProfileRevision": "mock-0.1"
+  },
+  "zones": [
+    {
+      "identifier": "CA-ON-KINGSVILLE-LEARN-001",
+      "country": "CA",
+      "name": "Kingsville Learning Caution Zone",
+      "reason": "TRAINING",
+      "message": "Synthetic zone. Do not use for flight planning.",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-82.7600, 42.0300],
+            [-82.7000, 42.0300],
+            [-82.7000, 42.0800],
+            [-82.7600, 42.0800],
+            [-82.7600, 42.0300]
+          ]
+        ]
+      },
+      "verticalLayers": [
+        {
+          "lower": {
+            "value": 0.0,
+            "reference": "AGL",
+            "unit": "M"
+          },
+          "upper": {
+            "value": 120.0,
+            "reference": "AGL",
+            "unit": "M"
+          }
+        }
+      ],
+      "timePeriods": [
+        {
+          "startDateTime": "2026-07-29T00:00:00Z",
+          "endDateTime": "2027-07-29T00:00:00Z"
+        }
+      ],
+      "restrictions": [
+        "CAUTION",
+        "REVIEW_LOCAL_REQUIREMENTS"
+      ],
+      "authority": {
+        "name": "Synthetic Canadian Authority",
+        "service": "Learning only",
+        "contactName": "Not applicable",
+        "siteURL": "",
+        "email": "",
+        "phone": ""
+      },
+      "canadianZoneClass": "MOCK_CAUTIONARY_AREA"
+    }
+  ],
+  "notice": "This file is synthetic and is not authoritative aviation data."
+}
