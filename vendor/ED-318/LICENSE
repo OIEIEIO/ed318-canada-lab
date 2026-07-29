@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 Jorge Alonso and ed318-canada-lab contributors
+Copyright (c) 2023 Eduard Porosnicu. EUROCONTROL
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,8 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-Third-party schemas, examples, datasets, standards material, and other imported
-content remain subject to their original licences and terms. Their inclusion
-in this repository does not change those terms. See the associated provenance
-records and retained licence files.

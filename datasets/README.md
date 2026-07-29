@@ -1,30 +1,19 @@
 # Datasets
 
+This tree separates evidence from project output. See [`PROVENANCE_SPEC.md`](PROVENANCE_SPEC.md) for required records.
+
 ## `original/`
 
-Unmodified datasets obtained from official or authoritative publishers.
-
-Each dataset should include a provenance manifest recording:
-
-- country;
-- publishing authority;
-- source URL;
-- retrieval date;
-- dataset version;
-- licence;
-- SHA-256 checksum;
-- format;
-- ED-318 compatibility;
-- notes.
+Unmodified datasets obtained from official or authoritative publishers. Store provenance and checksums beside each acquisition. Do not manually repair source files.
 
 ## `normalized/`
 
-Outputs produced by this project's parser or normalization pipeline.
-
-Normalized files must identify the original source dataset and parser version.
+Outputs produced by the future normalization pipeline. Each output must identify its source checksum, parser/normalizer version, transformation profile, generation time, and validation result.
 
 ## `generated/`
 
-Synthetic datasets, test fixtures, demonstrations, and generated edge cases.
+Synthetic datasets, test fixtures, demonstrations, and generated edge cases. Generated data must never be represented as official national data.
 
-Generated data must never be described as official national data.
+## Reference repositories
+
+Standards-related schemas and examples are kept under `schemas/` and `vendor/`, not mixed with national datasets.

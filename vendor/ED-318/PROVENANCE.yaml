@@ -1,0 +1,62 @@
+record_version: 1
+artifact_id: ed-318-upstream-snapshot-2026-07-29
+artifact_type: reference_repository
+upstream_repository: https://github.com/eurocontrol-swim/ED-318
+source_archive: ED-318-main.zip
+source_archive_sha256: 504fb8f7b261a80330667e38a7aa4ee085088461986ebc4147638b9524d66687
+retrieved_at: 2026-07-29T17:28:00Z
+branch_name_in_archive: main
+commit_sha: unavailable
+commit_sha_note: "The supplied ZIP contains no .git metadata; no commit SHA is claimed."
+license: MIT
+license_path: vendor/ED-318/LICENSE
+modified: false
+copy_policy: "File contents copied byte-for-byte; paths reorganized to separate schemas from examples."
+excluded_entries:
+  - .DS_Store
+  - examples/.DS_Store
+files:
+  - path: schemas/ed-318/Schema_GeoJSONGeometries.json
+    sha256: 30a4f4f819cd7b036602c8bfd464fe91a1672944064c2f131caa04740be72388
+  - path: schemas/ed-318/Schema_GeoZoneAuthority.json
+    sha256: 1f9340e4ba0c9b1a51edd204e6a605ffc8b289a1d2be057792ea687247a0a895
+  - path: schemas/ed-318/Schema_GeoZoneCollectionMetadata.json
+    sha256: 0e3bd1fff12f7a24f26ab2d73a55027e15f9e15b290f7ba8df11f040178dd92d
+  - path: schemas/ed-318/Schema_GeoZoneDataTypes.json
+    sha256: 9c546b24d4774195ece09cf7054a19a77719ade603e6256fb66f38faf4f219cf
+  - path: schemas/ed-318/Schema_GeoZoneProperties.json
+    sha256: 6bb7bd9cc5a4712731f62b99cf17841c4365a4109b5d551159883ff996f1b718
+  - path: schemas/ed-318/Schema_GeoZoneTimePeriod.json
+    sha256: 73f801dfeb546a6be64c6943092f64076ef85d16a6f97cfb14c788e3d4af7302
+  - path: schemas/ed-318/Schema_GeoZones.json
+    sha256: 257e1405db4d661f489276a07acbf82616fb7faeab0d25fa0c25ddbc36802ba8
+  - path: schemas/ed-318/Schema_LayeredGeoJSON.json
+    sha256: 064e1c78ab41374c236a57005c09e03b209c43e787ac4dd084eda73e37fb1dce
+  - path: vendor/ED-318/LICENSE
+    sha256: 2c61b04edaa17ca72cede8ea37aab79358c345f26d7396454076c871eaf8fc98
+  - path: vendor/ED-318/README.md
+    sha256: 20975eb8d27787266717bc57a280a991b0430e8ce69f3325cd728fbe08090b08
+  - path: vendor/ED-318/examples/Dockerfile
+    sha256: 9015f68c0dac554b00312176cac73a556648ba4f548b70eb9be08b79d8b48e50
+  - path: vendor/ED-318/examples/Example_Collection.json
+    sha256: cf40aed8a8c8e0719939137c36bcda7f1474a1ef7d84b55414d731c9cc74ce03
+  - path: vendor/ED-318/examples/Example_GeoZone_2_Layers.json
+    sha256: 9b1aa0941199f28100d631f20f2d73b827368b733eae71c478acea32e8af8fc3
+  - path: vendor/ED-318/examples/Example_GeoZone_Circle.json
+    sha256: 2807d5131030aad535896f28c668be846a9b823e7f939b60122fb71e2e741a25
+  - path: vendor/ED-318/examples/Example_GeoZone_with_extension.json
+    sha256: a72b318e4882981d92ecc4c769f05e3de823b7f400ccba4a47dfdd28115c05cd
+  - path: vendor/ED-318/examples/InvalidExample_GeoZone_2_Layers.json
+    sha256: a9ee0e6fb044273f237abdd65ec63aa0069f83ac9b834ee2a63048c613ac5645
+  - path: vendor/ED-318/examples/PartialExample_GeoZoneProperties.json
+    sha256: 13e071d9a21f3970287b30359b5b2d8c2ab464829689db62606e8841e797e3f2
+  - path: vendor/ED-318/examples/PartialExample_TimePeriod.json
+    sha256: d9b73c3cd0b37838c7f9f1a4d887042285354d96b550ddc254261943e45fe974
+  - path: vendor/ED-318/examples/PartialExample_ZoneAuthority.json
+    sha256: 94ff6cd158d927a91d8d8c8f1a39cff61d2f8a89226ee3cf3c3af7a5948a2edc
+  - path: vendor/ED-318/examples/PartialExample_featureGeoJSON.json
+    sha256: 004fcfcc5c6587222fd96b95ad859eb2178723c9d351498a5a54f44a876dfda5
+  - path: vendor/ED-318/examples/requirements.txt
+    sha256: d644634bead3495af2e0701cd8e753c7535bf981501ee782ed07c39728b45279
+  - path: vendor/ED-318/examples/validate_examples.py
+    sha256: 94bcef8d5dc3945ca141d647f10f3461809c2c3e8f025e56125bc64ebd19bea1

@@ -1,1 +1,3 @@
-fn main(){println!("ed318-canada-lab foundation");}
+fn main() {
+    println!("ed318-canada-lab foundation");
+}

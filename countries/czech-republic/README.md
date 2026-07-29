@@ -1,16 +1,13 @@
-# czech-republic
+# Czech Republic
 
-This directory contains country-specific documentation, provenance records,
-source links, implementation notes, and comparison material.
+## Baseline status
 
-Official source datasets must remain unchanged and should be stored under:
+- Classification: **Unclassified pending source acquisition**
+- Source datasets imported: none
+- Provenance records completed: none
 
-`datasets/original/`
+The Czech Republic is an initial research target. Source acquisition, licensing, and ED-318 relationship must be established before classification.
 
-Normalized parser output belongs under:
+Official or authoritative source files belong under `datasets/original/` with a completed provenance record. Normalized output belongs under `datasets/normalized/`; synthetic fixtures belong under `datasets/generated/`.
 
-`datasets/normalized/`
-
-Synthetic or generated data belongs under:
-
-`datasets/generated/`
+This classification must be revised when primary-source evidence is added.

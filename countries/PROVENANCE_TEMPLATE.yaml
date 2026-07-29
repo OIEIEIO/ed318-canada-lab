@@ -1,13 +1,23 @@
+record_version: 1
+artifact_id:
+artifact_type: dataset
 country:
 authority:
+publisher:
 dataset_name:
 source_url:
 retrieved_at:
-dataset_version:
+source_version:
+commit_sha:
 format:
-schema_version:
+schema_or_profile:
 license:
+license_path:
 sha256:
-official_source: true
+official_source: unknown
 modified: false
+classification:
+  # ED-318 implementation | compatible geographical-zone publication |
+  # non-ED-318 comparison model | proposed/future profile
+transformations: []
 notes: []

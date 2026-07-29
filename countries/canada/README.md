@@ -1,16 +1,13 @@
-# canada
+# Canada
 
-This directory contains country-specific documentation, provenance records,
-source links, implementation notes, and comparison material.
+## Baseline status
 
-Official source datasets must remain unchanged and should be stored under:
+- Classification: **Proposed/future Canadian profile**
+- Source datasets imported: none
+- Provenance records completed: none
 
-`datasets/original/`
+No official ED-318 national implementation is asserted by this baseline. This directory is reserved for evidence-based Canadian source research and classification.
 
-Normalized parser output belongs under:
+Official or authoritative source files belong under `datasets/original/` with a completed provenance record. Normalized output belongs under `datasets/normalized/`; synthetic fixtures belong under `datasets/generated/`.
 
-`datasets/normalized/`
-
-Synthetic or generated data belongs under:
-
-`datasets/generated/`
+This classification must be revised when primary-source evidence is added.

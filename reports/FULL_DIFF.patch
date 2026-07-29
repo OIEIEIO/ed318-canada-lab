@@ -1,0 +1,3058 @@
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,4 +1,35 @@
+ # Changelog
+ 
+-## v0.2.0-foundation
+-- Initial repository foundation.
++All notable project changes are documented here.
++
++## v0.2.1 — 2026-07-29
++
++### Added
++
++- Professional project, architecture, standards, country, and provenance documentation.
++- Unchanged ED-318 schema files under `schemas/ed-318/`.
++- Unchanged ED-318 examples and helper files under `vendor/ED-318/`.
++- ED-318 import provenance manifest and SHA-256 checksum inventory.
++- Country classification templates and initial classification notes.
++- Release semantic audit and baseline diff report.
++
++### Changed
++
++- Package version advanced from `0.2.0-foundation` to `0.2.1`.
++- `src/main.rs` formatted without changing placeholder behaviour.
++- Project-authored material licensed under MIT.
++- Existing placeholder documentation expanded into the documentation/provenance baseline.
++
++### Not added
++
++- No JSON Schema validator.
++- No ED-318 parser or Rust wire model.
++- No normalization engine.
++- No geo-awareness query engine.
++- No operational aircraft integration.
++
++## v0.2.0-foundation — 2026-07-29
++
++- Established repository, documentation, country/profile, dataset, report, and Rust project structure.
++- Retired the earlier parser CLI from the accepted baseline.
++- Retained a foundation-only Rust executable.
+--- a/CONTRIBUTING.md
++++ b/CONTRIBUTING.md
+@@ -1,6 +1,68 @@
+ # Contributing
+ 
+-- Keep official source data unchanged.
+-- Document provenance.
+-- Clearly label experimental work.
+-- Add tests with parser changes.
++## Before making changes
++
++Read `PROJECT_PHILOSOPHY.md`, `docs/architecture/ARCHITECTURE.md`, and `datasets/PROVENANCE_SPEC.md`. Changes must preserve the distinction between official sources, project implementation, normalized output, and national profiles.
++
++## Development checks
++
++For Rust changes, run:
++
++```bash
++cargo fmt --check
++cargo check
++cargo clippy --all-targets --all-features -- -D warnings
++cargo test
++```
++
++A contribution that changes behaviour must add or update automated tests. A documentation-only release may retain zero tests if it does not claim software capability.
++
++## Official and authoritative files
++
++Do not edit imported schemas, examples, licences, or source datasets in place. Introduce a new snapshot when upstream content changes. Record provenance and checksums before using the files.
++
++Project commentary about an official file belongs outside the imported snapshot.
++
++## Provenance
++
++Every new external file must identify, as available:
++
++- publisher or authority;
++- source URL;
++- retrieval date and time;
++- dataset or release version;
++- commit or immutable identifier;
++- licence or terms;
++- SHA-256 checksum;
++- whether the file was modified;
++- known gaps or uncertainty.
++
++Use `countries/PROVENANCE_TEMPLATE.yaml` and `datasets/PROVENANCE_SPEC.md`.
++
++## Country classifications
++
++Do not describe material as ED-318-compliant without evidence. Use the classifications defined in `docs/countries/COUNTRY_TEMPLATE.md`. Proposed and experimental Canadian content must not be placed in `profiles/canada/official/`.
++
++## Code design
++
++Keep validation, exact wire models, normalization, and country interpretation in separate modules. Avoid lossy transformations. Errors should identify the input location and actionable cause. New dependencies require a documented reason and licence review.
++
++## Documentation
++
++Update the README, architecture, roadmap, changelog, semantic audit, and diff report when a change affects their claims. Examples must state whether they are official, copied, normalized, or synthetic.
++
++## Release audit
++
++Each release should include:
++
++- baseline and target versions;
++- complete reviewed-file inventory;
++- modified-file list;
++- semantic changes and non-changes;
++- build, lint, format, and test results;
++- provenance changes;
++- unresolved risks.
++
++## Pull requests
++
++Keep changes focused. Explain why the change is needed, which layer it affects, which files were modified, what tests were run, and whether any external material was added.
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -4,4 +4,4 @@
+ 
+ [[package]]
+ name = "ed318-canada-lab"
+-version = "0.2.0-foundation"
++version = "0.2.1"
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -1,4 +1,8 @@
+ [package]
+-name="ed318-canada-lab"
+-version="0.2.0-foundation"
+-edition="2024"
++name = "ed318-canada-lab"
++version = "0.2.1"
++edition = "2024"
++description = "Auditable laboratory for ED-318 geographical-zone data and Canadian geo-awareness research"
++license = "MIT"
++repository = "https://github.com/OIEIEIO/ed318-canada-lab"
++publish = false
+--- a/LICENSE
++++ b/LICENSE
+@@ -1,7 +1,26 @@
+-License not yet selected.
++MIT License
+ 
+-Until a project licence is formally adopted, no permission is granted to copy,
+-modify, distribute, or reuse this repository beyond rights provided by applicable law.
++Copyright (c) 2026 Jorge Alonso and ed318-canada-lab contributors
+ 
+-Third-party schemas, datasets, standards material, and examples remain subject
+-to their original licences and terms.
++Permission is hereby granted, free of charge, to any person obtaining a copy
++of this software and associated documentation files (the "Software"), to deal
++in the Software without restriction, including without limitation the rights
++to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is
++furnished to do so, subject to the following conditions:
++
++The above copyright notice and this permission notice shall be included in all
++copies or substantial portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
++SOFTWARE.
++
++Third-party schemas, examples, datasets, standards material, and other imported
++content remain subject to their original licences and terms. Their inclusion
++in this repository does not change those terms. See the associated provenance
++records and retained licence files.
+--- a/PROJECT_PHILOSOPHY.md
++++ b/PROJECT_PHILOSOPHY.md
+@@ -1,5 +1,45 @@
+ # Project Philosophy
+ 
+-This repository is not a regulatory authority and does not define ED-318 or Canadian policy.
++## Purpose
+ 
+-Its purpose is to provide a transparent environment where official schemas, public datasets, parser implementations, and country profiles can be compared, tested, and discussed.
++`ed318-canada-lab` exists to make geographical-zone data engineering inspectable. It provides a place to compare standards, public datasets, schemas, national publication practices, parser behaviour, normalization choices, and proposed Canadian approaches without presenting project conclusions as regulatory fact.
++
++## Authority boundary
++
++This repository is not EUROCAE, Transport Canada, NAV CANADA, EUROCONTROL, the FAA, or another competent authority. It does not create legal requirements, operational permissions, or authoritative interpretations. Primary publications and official guidance always take precedence.
++
++## Evidence before interpretation
++
++Claims about a country, schema, standard, or authority must identify their source. Where evidence is incomplete, the repository must say so. Compatibility conclusions must distinguish direct conformance evidence from engineering inference.
++
++## Immutable source principle
++
++Official or authoritative source files are stored unchanged. Their checksums are recorded at acquisition. Corrections, mappings, and transformations are written to separate files so the original evidence remains recoverable.
++
++## Layer separation
++
++The project keeps five concerns separate:
++
++1. **Source material** — files as published or supplied.
++2. **Schema validation** — whether a document satisfies the selected schema.
++3. **Exact wire model** — Rust types representing the official serialized structure.
++4. **Normalization** — project-defined structures that permit comparison across formats.
++5. **Profiles and interpretation** — country-specific or application-specific meaning.
++
++A rule from a Canadian profile must never silently alter the ED-318 schema or exact wire model.
++
++## National neutrality
++
++Not every country publishes geographical-zone information using ED-318. Country material must be classified honestly as an ED-318 implementation, a compatible geographical-zone publication, a non-ED-318 comparison model, or a proposed/future profile.
++
++## Reproducibility
++
++Every imported dataset or reference snapshot should record origin, retrieval time, version information, licence, checksums, and transformation history. Generated outputs should identify the exact source and tool version that produced them.
++
++## Safety and operational scope
++
++The laboratory may eventually support validation and geo-awareness research, but it is not an aircraft command system, flight authorization service, navigation authority, or replacement for current aeronautical information. Operational integrations require separate safety analysis, requirements validation, verification, and regulatory acceptance.
++
++## Change discipline
++
++Each accepted release identifies its baseline, modified files, intended semantic changes, checks performed, known limitations, and unresolved questions. Imported official reference files are treated as read-only snapshots; upstream updates are introduced as new, separately identified snapshots.
+--- a/README.md
++++ b/README.md
+@@ -1,14 +1,95 @@
+ # ed318-canada-lab
+ 
+-## Mission
+-A neutral, auditable engineering laboratory for learning, validating, implementing, and comparing EUROCAE ED-318 geographical-zone data and future Canadian RPAS geo-awareness profiles.
++`ed318-canada-lab` is a neutral, auditable engineering laboratory for studying, validating, implementing, and comparing EUROCAE ED-318 geographical-zone data and future Canadian RPAS geo-awareness profiles.
+ 
+-## Principles
+-- Preserve official datasets unchanged.
+-- Record provenance for every dataset.
+-- Separate standards from implementation.
+-- Separate implementation from national profiles.
+-- Reproducible validation and testing.
+-- Evidence-based engineering.
++## Release status
+ 
+-See PROJECT_PHILOSOPHY.md and ROADMAP.md.
++This repository is **v0.2.1**, the documentation and provenance baseline. It intentionally contains no operational parser, validator, geo-awareness engine, or aircraft-control integration. The Rust binary remains a foundation placeholder. The first planned software capability is JSON Schema validation in a later release.
++
++The project is not a regulatory authority. Nothing here defines ED-318, Transport Canada policy, NAV CANADA policy, or an operational authorization.
++
++## Intended readers
++
++The repository is organized for engineers, regulators, researchers, data publishers, software contributors, and RPAS system integrators who need to understand exactly where information came from and which transformations were applied.
++
++## Core principles
++
++1. Preserve official and authoritative source material unchanged.
++2. Record provenance and SHA-256 checksums for imported material.
++3. Separate standards material from project implementation.
++4. Separate exact wire-format models from normalized internal models.
++5. Separate national source material from proposed or experimental profiles.
++6. Make validation, transformation, and comparison reproducible.
++7. State uncertainty and compatibility limits explicitly.
++
++## Architecture
++
++The intended processing boundary is:
++
++```text
++Official ED-318 JSON
++        ↓
++JSON Schema validation
++        ↓
++Exact ED-318 Rust wire model
++        ↓
++Normalized internal model
++        ↓
++Country profiles and geo-awareness logic
++```
++
++Canadian assumptions must not be introduced into schema validation or the exact ED-318 wire model. See [`docs/architecture/ARCHITECTURE.md`](docs/architecture/ARCHITECTURE.md).
++
++## Repository map
++
++- `schemas/ed-318/` — unchanged ED-318 JSON Schema files from the imported upstream archive.
++- `vendor/ED-318/` — unchanged upstream examples, helper files, README, and licence.
++- `datasets/original/` — unmodified authoritative datasets acquired from publishers.
++- `datasets/normalized/` — outputs created by future normalization tools.
++- `datasets/generated/` — synthetic fixtures, demonstrations, and edge cases.
++- `countries/` — country-specific research, classification, and provenance notes.
++- `profiles/canada/` — official, proposed, and experimental Canadian profile material kept in separate status directories.
++- `docs/` — architecture, standards, Canadian, and country-comparison documents.
++- `reports/` — semantic audits and release diff reports.
++- `src/` — Rust implementation; currently a placeholder only.
++- `tests/` — future automated validation, model, normalization, and CLI tests.
++
++## Imported ED-318 reference
++
++The uploaded `ED-318-main.zip` archive was imported for this release. The archive did not include `.git` metadata, so an exact upstream commit SHA cannot be proven from the supplied artifact. The release therefore records the archive SHA-256, retrieval date, included paths, exclusions, individual file checksums, and upstream URL in [`vendor/ED-318/PROVENANCE.yaml`](vendor/ED-318/PROVENANCE.yaml).
++
++The imported project is MIT licensed. Its licence is retained at [`vendor/ED-318/LICENSE`](vendor/ED-318/LICENSE).
++
++## Build verification
++
++Run:
++
++```bash
++cargo fmt --check
++cargo check
++cargo clippy --all-targets --all-features -- -D warnings
++cargo test
++```
++
++At v0.2.1 the test harness is expected to report zero tests. That is intentional for this documentation/provenance release.
++
++## Development sequence
++
++The next planned stages are:
++
++1. JSON Schema validator.
++2. Exact ED-318 Rust wire model.
++3. Normalized internal model.
++4. Country reference baselines.
++5. `inspect`, `validate`, `normalize`, `query`, and `compare` CLI commands.
++6. Canadian geo-awareness research profile.
++
++See [`ROADMAP.md`](ROADMAP.md) for release gates and acceptance criteria.
++
++## Contributing
++
++Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before changing source material, schemas, provenance records, or country classifications.
++
++## Licence
++
++Project-authored material is licensed under the MIT License. Third-party material remains under its original licence and is identified through provenance records. See [`LICENSE`](LICENSE).
+--- a/ROADMAP.md
++++ b/ROADMAP.md
+@@ -1,10 +1,67 @@
+ # Capability Roadmap
+ 
+-1. Repository foundation
+-2. Schema validation
+-3. ED-318 parser
+-4. Geo engine
+-5. Visualization
+-6. Country comparison
+-7. Canadian profile
+-8. Application integration
++The roadmap is staged so each layer can be audited before the next layer depends on it.
++
++## v0.2.1 — Documentation and provenance baseline
++
++**Scope:** professional documentation, immutable ED-318 reference snapshot, provenance manifest, formatted Rust placeholder, semantic audit, and diff report.
++
++**Exit criteria:** repository structure is explained; imported files have checksums and licence records; official and experimental material are visibly separated; Rust quality commands pass; no validator or parser is claimed.
++
++## v0.3.0 — Schema validator
++
++Implement:
++
++```text
++ed318-canada-lab validate <dataset>
++```
++
++Acceptance criteria:
++
++- load an ED-318 JSON document;
++- validate against the selected imported schema snapshot;
++- resolve local schema references deterministically;
++- report failures with useful JSON paths;
++- return documented process exit codes;
++- avoid discarding unknown input data before validation;
++- test official valid and invalid examples;
++- document schema draft and format-checking behaviour.
++
++No Canadian interpretation belongs in this stage.
++
++## v0.4.0 — Exact ED-318 Rust wire model
++
++Create types that represent the imported official JSON structure without normalization or Canadian assumptions. Add round-trip and compatibility tests. Document any schema ambiguity that cannot be represented exactly.
++
++## v0.5.0 — Normalized internal model
++
++Define project-owned structures for cross-country comparison. Every transformation must be explicit, testable, and traceable to its source field. Unsupported or ambiguous values must remain visible rather than being silently coerced.
++
++## v0.6.0 — Country reference baselines
++
++Begin with Spain, Czech Republic, Ireland, United States, and Canada. Classify each source as:
++
++- ED-318 implementation;
++- compatible geographical-zone publication;
++- non-ED-318 comparison model;
++- proposed or future Canadian profile.
++
++## v0.7.0 — CLI inspection and comparison
++
++Provide tested commands:
++
++- `inspect`
++- `validate`
++- `normalize`
++- `query`
++- `compare`
++
++Each command must document inputs, outputs, exit codes, error behaviour, and example use.
++
++## v0.8.0 — Canadian geo-awareness research profile
++
++Develop a clearly non-authoritative Canadian research profile based on public evidence. Keep official, proposed, and experimental content separate. Record assumptions and unresolved regulatory questions.
++
++## Later work
++
++Possible later capabilities include spatial indexing, temporal evaluation, altitude-reference handling, visualization, publication comparison, update detection, and integration APIs. These are not commitments and require separate requirements and safety review.
+--- a/countries/PROVENANCE_TEMPLATE.yaml
++++ b/countries/PROVENANCE_TEMPLATE.yaml
+@@ -1,13 +1,23 @@
++record_version: 1
++artifact_id:
++artifact_type: dataset
+ country:
+ authority:
++publisher:
+ dataset_name:
+ source_url:
+ retrieved_at:
+-dataset_version:
++source_version:
++commit_sha:
+ format:
+-schema_version:
++schema_or_profile:
+ license:
++license_path:
+ sha256:
+-official_source: true
++official_source: unknown
+ modified: false
++classification:
++  # ED-318 implementation | compatible geographical-zone publication |
++  # non-ED-318 comparison model | proposed/future profile
++transformations: []
+ notes: []
+--- a/countries/README.md
++++ b/countries/README.md
+@@ -1 +1,5 @@
+-One directory per country with source, notes, and normalization.
++# Country Reference Baselines
++
++Each country directory records sources, provenance, classification, format analysis, normalization notes, and unresolved questions. Use `docs/countries/COUNTRY_TEMPLATE.md` and `countries/PROVENANCE_TEMPLATE.yaml`.
++
++A country directory does not imply ED-318 adoption. Classifications must be evidence-based.
+--- a/countries/canada/README.md
++++ b/countries/canada/README.md
+@@ -1,16 +1,13 @@
+-# canada
++# Canada
+ 
+-This directory contains country-specific documentation, provenance records,
+-source links, implementation notes, and comparison material.
++## Baseline status
+ 
+-Official source datasets must remain unchanged and should be stored under:
++- Classification: **Proposed/future Canadian profile**
++- Source datasets imported: none
++- Provenance records completed: none
+ 
+-`datasets/original/`
++No official ED-318 national implementation is asserted by this baseline. This directory is reserved for evidence-based Canadian source research and classification.
+ 
+-Normalized parser output belongs under:
++Official or authoritative source files belong under `datasets/original/` with a completed provenance record. Normalized output belongs under `datasets/normalized/`; synthetic fixtures belong under `datasets/generated/`.
+ 
+-`datasets/normalized/`
+-
+-Synthetic or generated data belongs under:
+-
+-`datasets/generated/`
++This classification must be revised when primary-source evidence is added.
+--- a/countries/czech-republic/README.md
++++ b/countries/czech-republic/README.md
+@@ -1,16 +1,13 @@
+-# czech-republic
++# Czech Republic
+ 
+-This directory contains country-specific documentation, provenance records,
+-source links, implementation notes, and comparison material.
++## Baseline status
+ 
+-Official source datasets must remain unchanged and should be stored under:
++- Classification: **Unclassified pending source acquisition**
++- Source datasets imported: none
++- Provenance records completed: none
+ 
+-`datasets/original/`
++The Czech Republic is an initial research target. Source acquisition, licensing, and ED-318 relationship must be established before classification.
+ 
+-Normalized parser output belongs under:
++Official or authoritative source files belong under `datasets/original/` with a completed provenance record. Normalized output belongs under `datasets/normalized/`; synthetic fixtures belong under `datasets/generated/`.
+ 
+-`datasets/normalized/`
+-
+-Synthetic or generated data belongs under:
+-
+-`datasets/generated/`
++This classification must be revised when primary-source evidence is added.
+--- a/countries/ireland/README.md
++++ b/countries/ireland/README.md
+@@ -1,16 +1,13 @@
+-# ireland
++# Ireland
+ 
+-This directory contains country-specific documentation, provenance records,
+-source links, implementation notes, and comparison material.
++## Baseline status
+ 
+-Official source datasets must remain unchanged and should be stored under:
++- Classification: **Unclassified pending source acquisition**
++- Source datasets imported: none
++- Provenance records completed: none
+ 
+-`datasets/original/`
++Ireland is an initial research target. Source acquisition, licensing, and ED-318 relationship must be established before classification.
+ 
+-Normalized parser output belongs under:
++Official or authoritative source files belong under `datasets/original/` with a completed provenance record. Normalized output belongs under `datasets/normalized/`; synthetic fixtures belong under `datasets/generated/`.
+ 
+-`datasets/normalized/`
+-
+-Synthetic or generated data belongs under:
+-
+-`datasets/generated/`
++This classification must be revised when primary-source evidence is added.
+--- a/countries/spain/README.md
++++ b/countries/spain/README.md
+@@ -1,16 +1,13 @@
+-# spain
++# Spain
+ 
+-This directory contains country-specific documentation, provenance records,
+-source links, implementation notes, and comparison material.
++## Baseline status
+ 
+-Official source datasets must remain unchanged and should be stored under:
++- Classification: **Unclassified pending source acquisition**
++- Source datasets imported: none
++- Provenance records completed: none
+ 
+-`datasets/original/`
++Spain is an initial research target because public UAS geographical-zone publication practices may provide useful ED-318 comparison material. No conformance claim is made here.
+ 
+-Normalized parser output belongs under:
++Official or authoritative source files belong under `datasets/original/` with a completed provenance record. Normalized output belongs under `datasets/normalized/`; synthetic fixtures belong under `datasets/generated/`.
+ 
+-`datasets/normalized/`
+-
+-Synthetic or generated data belongs under:
+-
+-`datasets/generated/`
++This classification must be revised when primary-source evidence is added.
+--- a/countries/united-states/README.md
++++ b/countries/united-states/README.md
+@@ -1,16 +1,13 @@
+-# united-states
++# United States
+ 
+-This directory contains country-specific documentation, provenance records,
+-source links, implementation notes, and comparison material.
++## Baseline status
+ 
+-Official source datasets must remain unchanged and should be stored under:
++- Classification: **Non-ED-318 comparison model candidate**
++- Source datasets imported: none
++- Provenance records completed: none
+ 
+-`datasets/original/`
++United States geographical and UAS restriction publications are expected to require comparison without forcing ED-318 terminology. Evidence and source records are not yet imported.
+ 
+-Normalized parser output belongs under:
++Official or authoritative source files belong under `datasets/original/` with a completed provenance record. Normalized output belongs under `datasets/normalized/`; synthetic fixtures belong under `datasets/generated/`.
+ 
+-`datasets/normalized/`
+-
+-Synthetic or generated data belongs under:
+-
+-`datasets/generated/`
++This classification must be revised when primary-source evidence is added.
+--- a/datasets/PROVENANCE_SPEC.md
++++ b/datasets/PROVENANCE_SPEC.md
+@@ -0,0 +1,48 @@
++# Dataset Provenance Specification
++
++## Purpose
++
++Every external or generated data artifact must be traceable to its origin and transformation history.
++
++## Required fields
++
++A provenance record should include:
++
++- `record_version` — version of this provenance format;
++- `artifact_id` — stable project identifier;
++- `artifact_type` — schema, example, dataset, licence, source archive, or generated output;
++- `country` when applicable;
++- `publisher` or `authority`;
++- `source_url`;
++- `retrieved_at` in ISO 8601 UTC;
++- `source_version` and `commit_sha` when available;
++- `source_archive` and its SHA-256 when acquisition used an archive;
++- `license` and retained licence path;
++- `sha256` for each stored artifact;
++- `official_source` as true, false, or unknown;
++- `modified` as true or false;
++- `transformations` for generated or normalized output;
++- `notes` and unresolved uncertainty.
++
++## Integrity rules
++
++1. Calculate checksums before interpretation or transformation.
++2. Do not replace original files with normalized output.
++3. Do not call a file unchanged if line endings, encoding, ordering, or content changed.
++4. Name excluded archive entries such as `.DS_Store` files.
++5. Mark unavailable immutable identifiers as unavailable; never infer a commit SHA from a branch-named ZIP.
++
++## Storage rules
++
++- Original authoritative data: `datasets/original/<country>/<source>/`.
++- Normalized output: `datasets/normalized/<country>/<profile>/`.
++- Synthetic fixtures: `datasets/generated/<purpose>/`.
++- Imported standards/reference repositories: `vendor/<project>/` and, where needed by tools, unchanged schema copies under `schemas/`.
++
++## Transformation records
++
++A normalized or generated artifact must record the source checksum, tool name and version, command/options, generation time, transformation profile, validation result, and output checksum.
++
++## Verification
++
++Release audits should verify that stored checksums match files and that imported source material has not changed unexpectedly.
+--- a/datasets/README.md
++++ b/datasets/README.md
+@@ -1,30 +1,19 @@
+ # Datasets
++
++This tree separates evidence from project output. See [`PROVENANCE_SPEC.md`](PROVENANCE_SPEC.md) for required records.
+ 
+ ## `original/`
+ 
+-Unmodified datasets obtained from official or authoritative publishers.
+-
+-Each dataset should include a provenance manifest recording:
+-
+-- country;
+-- publishing authority;
+-- source URL;
+-- retrieval date;
+-- dataset version;
+-- licence;
+-- SHA-256 checksum;
+-- format;
+-- ED-318 compatibility;
+-- notes.
++Unmodified datasets obtained from official or authoritative publishers. Store provenance and checksums beside each acquisition. Do not manually repair source files.
+ 
+ ## `normalized/`
+ 
+-Outputs produced by this project's parser or normalization pipeline.
+-
+-Normalized files must identify the original source dataset and parser version.
++Outputs produced by the future normalization pipeline. Each output must identify its source checksum, parser/normalizer version, transformation profile, generation time, and validation result.
+ 
+ ## `generated/`
+ 
+-Synthetic datasets, test fixtures, demonstrations, and generated edge cases.
++Synthetic datasets, test fixtures, demonstrations, and generated edge cases. Generated data must never be represented as official national data.
+ 
+-Generated data must never be described as official national data.
++## Reference repositories
++
++Standards-related schemas and examples are kept under `schemas/` and `vendor/`, not mixed with national datasets.
+--- a/docs/architecture/ARCHITECTURE.md
++++ b/docs/architecture/ARCHITECTURE.md
+@@ -0,0 +1,70 @@
++# Architecture
++
++## 1. Purpose
++
++The architecture protects provenance and meaning while allowing ED-318 data and other national geographical-zone publications to be studied in one repository.
++
++## 2. Layered model
++
++```text
++External source archive or dataset
++        ↓ acquisition + checksum
++Immutable source snapshot
++        ↓
++JSON Schema validation
++        ↓
++Exact ED-318 Rust wire model
++        ↓ explicit transformation
++Normalized internal model
++        ↓
++Country profile and interpretation
++        ↓
++Inspection, query, comparison, or application API
++```
++
++Each arrow is a boundary that must be testable and auditable.
++
++## 3. Immutable source layer
++
++External schemas, examples, and authoritative datasets are copied without content edits. The source URL, retrieval date, licence, archive checksum, and per-file checksums are recorded. Operating-system metadata may be excluded, but exclusions must be named.
++
++## 4. Validation layer
++
++Validation answers a narrow question: does the JSON instance satisfy the selected schema and configured format checks? It must not infer Canadian requirements, normalize values, or silently repair invalid documents.
++
++Validation diagnostics should include the instance path, schema path when available, error category, and human-readable explanation. Exit codes must distinguish success, validation failure, input/read failure, schema/configuration failure, and internal failure.
++
++## 5. Exact wire-model layer
++
++The exact model represents the official serialized structure. Field names, optionality, enumerations, arrays, nullability, and extensions should remain faithful to the selected ED-318 snapshot. Unknown or extension content must not be discarded merely because the project does not yet interpret it.
++
++## 6. Normalized internal model
++
++Normalization creates project-owned structures for cross-format comparison. It may standardize names or units only through explicit transformations. Every normalized object must retain source identity and transformation provenance. Ambiguous source values remain marked as ambiguous.
++
++## 7. Country-profile layer
++
++Country profiles describe publication practice and interpretation outside the ED-318 wire format. A profile states its authority status, evidence, assumptions, supported source formats, mappings, and unresolved questions.
++
++Canadian material is divided into `official`, `proposed`, and `experimental`. Code must not merge these status classes implicitly.
++
++## 8. Command-line boundary
++
++Planned commands are `inspect`, `validate`, `normalize`, `query`, and `compare`. CLI output is an interface contract and requires tests. Machine-readable output should be available where practical and separated from diagnostics.
++
++## 9. Error and data-loss policy
++
++- Invalid source data is reported, not silently corrected.
++- Unsupported values remain visible.
++- Unit and vertical-reference conversion requires an explicit policy.
++- AGL, AMSL, and WGS84 are not interchangeable.
++- Geometry boundary behaviour must be specified and tested.
++- Time-zone, recurrence, sunrise, and sunset rules require explicit implementations.
++
++## 10. Security and safety boundary
++
++Input files are untrusted. Future code should bound memory use, recursion, collection sizes, and diagnostic output. The project does not provide flight authorization or command an aircraft. Operational adoption requires independent requirements, safety, cybersecurity, and regulatory work.
++
++## 11. Current implementation status
++
++At v0.2.1 only the repository foundation, documentation, and imported reference snapshot exist. `src/main.rs` prints a placeholder message. No architecture box beyond source acquisition is implemented.
+--- a/docs/architecture/README.md
++++ b/docs/architecture/README.md
+@@ -1 +1,3 @@
+-Architecture diagrams and component descriptions.
++# Architecture Documentation
++
++The authoritative architecture description is [`ARCHITECTURE.md`](ARCHITECTURE.md). Diagrams and component-specific design records may be added here as implementation begins.
+--- a/docs/canada/README.md
++++ b/docs/canada/README.md
+@@ -1 +1,5 @@
+-Canadian profile notes and proposals.
++# Canadian Research Notes
++
++Canadian material is separated from the imported ED-318 reference and classified by authority status under `profiles/canada/`.
++
++This directory may contain research summaries, source inventories, comparison notes, and design questions. It must not present proposals or experiments as Transport Canada or NAV CANADA policy.
+--- a/docs/countries/COUNTRY_TEMPLATE.md
++++ b/docs/countries/COUNTRY_TEMPLATE.md
+@@ -0,0 +1,54 @@
++# Country Reference Template
++
++Use this template for each country reference baseline.
++
++## Identity
++
++- Country:
++- Competent authority or publisher:
++- Dataset/publication name:
++- Source URL:
++- Retrieval date:
++- Version or publication date:
++- Licence/terms:
++- SHA-256:
++
++## Classification
++
++Choose one and provide evidence:
++
++- **ED-318 implementation** — explicitly published against ED-318 or an identified national profile.
++- **Compatible geographical-zone publication** — structurally or semantically compatible in documented ways, without a proven ED-318 conformance claim.
++- **Non-ED-318 comparison model** — useful for comparison but based on another format or publication model.
++- **Proposed/future profile** — not an official deployed national publication.
++
++## Source integrity
++
++- Official source: yes/no/uncertain
++- Modified after retrieval: yes/no
++- Original storage path:
++- Provenance record path:
++- Verification notes:
++
++## Format analysis
++
++- Serialization:
++- Schema/profile:
++- Geometry support:
++- Vertical model:
++- Temporal model:
++- Authority/contact model:
++- Extension mechanism:
++- Update/publication mechanism:
++
++## Mapping and normalization
++
++Describe mappings to the project's normalized model. Identify loss, ambiguity, unsupported values, unit changes, and assumptions.
++
++## Operational and legal limits
++
++State what the source can and cannot be relied upon to establish. Identify update frequency, availability limitations, and authoritative-use requirements.
++
++## Open questions
++
++List unresolved technical, regulatory, licensing, and provenance questions.
+--- a/docs/countries/README.md
++++ b/docs/countries/README.md
+@@ -1 +1,3 @@
+-Country comparison documents.
++# Country Comparisons
++
++Country studies use [`COUNTRY_TEMPLATE.md`](COUNTRY_TEMPLATE.md). A common directory structure does not imply that every country publishes ED-318 data or has equivalent legal and operational rules.
+--- a/docs/standards/ED-318.md
++++ b/docs/standards/ED-318.md
+@@ -0,0 +1,41 @@
++# ED-318 Reference Notes
++
++## Scope of this document
++
++This file records the laboratory's handling of the uploaded ED-318 schema repository. It is an engineering orientation document, not a substitute for the published EUROCAE standard.
++
++## Imported public schema repository
++
++Upstream project: `https://github.com/eurocontrol-swim/ED-318`
++
++The supplied archive identifies itself as a repository for the ED-318 GeoZones Schema and retains an MIT licence naming Eduard Porosnicu and EUROCONTROL. The archive also acknowledges reuse of portions of the GeoJSON schema.
++
++The archive contains JSON Schema Draft-07 documents for:
++
++- GeoJSON geometries;
++- zone authority;
++- collection metadata;
++- shared data types;
++- zone properties;
++- zone time periods;
++- GeoZone FeatureCollections;
++- layered GeoJSON vertical extents.
++
++It also contains complete, partial, extension, and intentionally invalid examples plus a Python validation helper.
++
++## Important limits
++
++Possessing or validating against these public schemas does not establish full ED-318 compliance. Conformance may depend on requirements, semantics, publication rules, profiles, and test criteria that are not represented solely by the JSON Schema files.
++
++The supplied ZIP lacks Git metadata. v0.2.1 therefore does not claim a verified commit SHA. It pins the archive and imported files using SHA-256 checksums in `vendor/ED-318/PROVENANCE.yaml`.
++
++## Repository use
++
++- `schemas/ed-318/` contains unchanged schema JSON files for future validator use.
++- `vendor/ED-318/examples/` contains unchanged upstream examples and helper files.
++- `vendor/ED-318/LICENSE` retains the upstream MIT licence.
++- Project interpretations and tests must be stored outside the imported snapshot.
++
++## Update policy
++
++An upstream update must be imported as a new identified snapshot. Do not overwrite the existing snapshot without changing provenance and reviewing schema, example, licensing, and compatibility differences.
+--- a/docs/standards/README.md
++++ b/docs/standards/README.md
+@@ -1 +1,5 @@
+-Summaries and relationships of ED-269, ED-318, ED-318A and related public guidance.
++# Standards Notes
++
++This directory contains engineering summaries and relationship notes for ED-318 and related publications. These documents are not reproductions of standards and do not replace authoritative copies.
++
++Start with [`ED-318.md`](ED-318.md).
+--- a/profiles/canada/README.md
++++ b/profiles/canada/README.md
+@@ -1,9 +1,9 @@
+ # Canada Profiles
+ 
+-Canadian geo-awareness profiles are separated by status:
++Canadian geo-awareness material is separated by authority status:
+ 
+-- `official/` — published Canadian requirements or profiles only.
+-- `proposed/` — documented proposals under discussion.
+-- `experimental/` — project experiments and implementation research.
++- `official/` — only requirements, schemas, or profiles published by an authorized Canadian source.
++- `proposed/` — documented project or external proposals under evaluation.
++- `experimental/` — prototypes, mappings, fixtures, and implementation research.
+ 
+-Nothing in `proposed/` or `experimental/` should be presented as Transport Canada policy.
++Nothing in `proposed/` or `experimental/` is Transport Canada or NAV CANADA policy. Moving material between status directories requires a documented evidence review and release audit.
+--- a/reports/DIFF_REPORT.md
++++ b/reports/DIFF_REPORT.md
+@@ -1,22 +1,93 @@
+ # Diff Report
+ 
+-## Baseline
++## Comparison
+ 
+-No previous project baseline. This is the initial `v0.1.0` scaffold.
++- Baseline: `ed318-canada-lab v0.2.0-foundation`
++- Target: `ed318-canada-lab v0.2.1`
++- Date: 2026-07-29
++- Full unified diff: [`FULL_DIFF.patch`](FULL_DIFF.patch)
++
++## Summary
++
++- Modified existing files: 28
++- Added files: 27
++- Removed files: 0
++- Rust dependencies added: 0
++- Runtime features added: 0
++
++## Modified files
++
++- `CHANGELOG.md`
++- `CONTRIBUTING.md`
++- `Cargo.lock`
++- `Cargo.toml`
++- `LICENSE`
++- `PROJECT_PHILOSOPHY.md`
++- `README.md`
++- `ROADMAP.md`
++- `countries/PROVENANCE_TEMPLATE.yaml`
++- `countries/README.md`
++- `countries/canada/README.md`
++- `countries/czech-republic/README.md`
++- `countries/ireland/README.md`
++- `countries/spain/README.md`
++- `countries/united-states/README.md`
++- `datasets/README.md`
++- `docs/architecture/README.md`
++- `docs/canada/README.md`
++- `docs/countries/README.md`
++- `docs/standards/README.md`
++- `profiles/canada/README.md`
++- `reports/README.md`
++- `samples/README.md`
++- `schemas/README.md`
++- `src/main.rs`
++- `tests/README.md`
++- `tools/README.md`
++- `vendor/README.md`
+ 
+ ## Added files
+ 
+-- `Cargo.toml`
+-- `src/main.rs`
+-- `samples/canada-learning-zones.json`
+-- `README.md`
+-- `reports/SEMANTIC_AUDIT.md`
+-- `reports/DIFF_REPORT.md`
++- `datasets/PROVENANCE_SPEC.md`
++- `docs/architecture/ARCHITECTURE.md`
++- `docs/countries/COUNTRY_TEMPLATE.md`
++- `docs/standards/ED-318.md`
++- `schemas/ed-318/Schema_GeoJSONGeometries.json`
++- `schemas/ed-318/Schema_GeoZoneAuthority.json`
++- `schemas/ed-318/Schema_GeoZoneCollectionMetadata.json`
++- `schemas/ed-318/Schema_GeoZoneDataTypes.json`
++- `schemas/ed-318/Schema_GeoZoneProperties.json`
++- `schemas/ed-318/Schema_GeoZoneTimePeriod.json`
++- `schemas/ed-318/Schema_GeoZones.json`
++- `schemas/ed-318/Schema_LayeredGeoJSON.json`
++- `vendor/ED-318/LICENSE`
++- `vendor/ED-318/PROVENANCE.yaml`
++- `vendor/ED-318/README.md`
++- `vendor/ED-318/examples/Dockerfile`
++- `vendor/ED-318/examples/Example_Collection.json`
++- `vendor/ED-318/examples/Example_GeoZone_2_Layers.json`
++- `vendor/ED-318/examples/Example_GeoZone_Circle.json`
++- `vendor/ED-318/examples/Example_GeoZone_with_extension.json`
++- `vendor/ED-318/examples/InvalidExample_GeoZone_2_Layers.json`
++- `vendor/ED-318/examples/PartialExample_GeoZoneProperties.json`
++- `vendor/ED-318/examples/PartialExample_TimePeriod.json`
++- `vendor/ED-318/examples/PartialExample_ZoneAuthority.json`
++- `vendor/ED-318/examples/PartialExample_featureGeoJSON.json`
++- `vendor/ED-318/examples/requirements.txt`
++- `vendor/ED-318/examples/validate_examples.py`
+ 
+ ## Removed files
+ 
+-None.
++- None.
+ 
+-## Modified files
++## Semantic diff
+ 
+-None; all files are new.
++The release changes project documentation, provenance, licensing, release metadata, and imported reference material. The only Rust source change is formatting of the existing placeholder. No parser, validator, CLI command, data model, or query behaviour is introduced.
++
++## Imported content
++
++The added ED-318 files are copied byte-for-byte from `ED-318-main.zip`, except `.DS_Store` operating-system metadata, which was deliberately excluded and recorded in provenance.
++
++## Verification status
++
++JSON parsing and byte-for-byte import checks passed. Rust commands were not run because `cargo` was unavailable in the release environment. See `SEMANTIC_AUDIT.md` for the complete status.
+--- a/reports/README.md
++++ b/reports/README.md
+@@ -1 +1,3 @@
+-Validation reports and comparison reports.
++# Reports
++
++Release audit, validation, compatibility, and comparison reports are stored here. Reports must identify their baseline, reviewed files, checks performed, findings, limitations, and date.
+--- a/reports/SEMANTIC_AUDIT.md
++++ b/reports/SEMANTIC_AUDIT.md
+@@ -1,58 +1,162 @@
+ # Semantic Audit Report
+ 
+-## Project
++## Release identity
+ 
+-- Name: `ed318-canada-lab`
+-- Version: `0.1.0`
+-- Created: 2026-07-29
+-- Baseline: New project; no earlier code baseline exists.
++- Project: `ed318-canada-lab`
++- Baseline: `v0.2.0-foundation`
++- Audited release: `v0.2.1`
++- Audit date: 2026-07-29
++- Release purpose: documentation and provenance baseline
+ 
+-## Reviewed files
++## Audit scope
+ 
++Every file in the uploaded `ed318-canada-lab-main.zip` baseline and every file in the uploaded `ED-318-main.zip` reference archive was inventoried and read. JSON files were parsed, imported files were compared byte-for-byte with their archive sources, and a complete textual diff was generated.
++
++## Baseline files reviewed
++
++- `.gitignore`
++- `CHANGELOG.md`
++- `CONTRIBUTING.md`
++- `Cargo.lock`
+ - `Cargo.toml`
++- `LICENSE`
++- `PROJECT_PHILOSOPHY.md`
++- `README.md`
++- `ROADMAP.md`
++- `countries/PROVENANCE_TEMPLATE.yaml`
++- `countries/README.md`
++- `countries/canada/README.md`
++- `countries/czech-republic/README.md`
++- `countries/ireland/README.md`
++- `countries/spain/README.md`
++- `countries/united-states/README.md`
++- `datasets/README.md`
++- `datasets/generated/README.md`
++- `datasets/normalized/README.md`
++- `datasets/original/README.md`
++- `docs/architecture/README.md`
++- `docs/canada/README.md`
++- `docs/countries/README.md`
++- `docs/standards/README.md`
++- `profiles/canada/README.md`
++- `profiles/canada/experimental/README.md`
++- `profiles/canada/official/README.md`
++- `profiles/canada/proposed/README.md`
++- `reports/DIFF_REPORT.md`
++- `reports/README.md`
++- `reports/SEMANTIC_AUDIT.md`
++- `samples/README.md`
++- `samples/canada-learning-zones.json`
++- `schemas/README.md`
+ - `src/main.rs`
+-- `samples/canada-learning-zones.json`
++- `tests/README.md`
++- `tools/README.md`
++- `vendor/README.md`
++
++## Upstream archive files reviewed
++
++- `.DS_Store`
++- `LICENSE`
+ - `README.md`
++- `examples/.DS_Store`
++- `examples/Dockerfile`
++- `examples/Example_Collection.json`
++- `examples/Example_GeoZone_2_Layers.json`
++- `examples/Example_GeoZone_Circle.json`
++- `examples/Example_GeoZone_with_extension.json`
++- `examples/InvalidExample_GeoZone_2_Layers.json`
++- `examples/PartialExample_GeoZoneProperties.json`
++- `examples/PartialExample_TimePeriod.json`
++- `examples/PartialExample_ZoneAuthority.json`
++- `examples/PartialExample_featureGeoJSON.json`
++- `examples/requirements.txt`
++- `examples/validate_examples.py`
++- `schema/Schema_GeoJSONGeometries.json`
++- `schema/Schema_GeoZoneAuthority.json`
++- `schema/Schema_GeoZoneCollectionMetadata.json`
++- `schema/Schema_GeoZoneDataTypes.json`
++- `schema/Schema_GeoZoneProperties.json`
++- `schema/Schema_GeoZoneTimePeriod.json`
++- `schema/Schema_GeoZones.json`
++- `schema/Schema_LayeredGeoJSON.json`
+ 
+-## Intended behaviour
++The `.DS_Store` entries were identified as operating-system metadata and excluded from the imported release. Their exclusion is recorded in `vendor/ED-318/PROVENANCE.yaml`.
+ 
+-The tool reads a local JSON dataset, deserializes it into a learning-oriented geo-zone model, validates basic semantic constraints, prints summaries, and evaluates whether a supplied position is horizontally, vertically, and temporally inside a zone.
++## Intended semantic changes
+ 
+-## Safety and scope controls
++1. Advance package and release identity from `0.2.0-foundation` to `0.2.1`.
++2. Replace placeholder documentation with a professional description of purpose, authority boundaries, architecture, provenance, contribution practice, roadmap, country classification, and release controls.
++3. Adopt the MIT License for project-authored material while retaining third-party licences and provenance.
++4. Import the supplied ED-318 public schemas, examples, validation helper, Dockerfile, requirements, README, and licence without content changes.
++5. Record the source archive SHA-256 and per-file SHA-256 checksums.
++6. Format the placeholder `src/main.rs` without changing its output or adding implementation.
++7. Correct obsolete v0.1.0 audit and diff reports so they describe the accepted v0.2.0 baseline and v0.2.1 release.
+ 
+-- The README and sample explicitly state that the project is not compliant or authoritative.
+-- Unknown dataset, metadata, zone, and authority fields are preserved using flattened JSON maps.
+-- Parsing does not command an aircraft or modify an autopilot fence.
+-- Altitude references are not silently converted.
+-- AGL and AMSL are treated as different references.
+-- Invalid datasets stop the query operation.
++## Explicit non-changes
+ 
+-## Geometry review
++- No validator was implemented.
++- No parser or exact ED-318 Rust model was implemented.
++- No normalization model was implemented.
++- No geometry, altitude, time, query, compare, or visualization engine was implemented.
++- No Canadian regulatory interpretation was encoded.
++- No Rust dependencies were added.
++- The executable still prints `ed318-canada-lab foundation` and exits normally.
++- The synthetic `samples/canada-learning-zones.json` fixture was not modified.
+ 
+-- Polygon and MultiPolygon are supported.
+-- Exterior-ring containment uses ray casting.
+-- Interior rings are treated as holes.
+-- Validation checks ring size, closure, latitude range, and longitude range.
+-- Boundary-point behaviour is not yet formally defined and must be addressed against ED-318 requirements.
++## Imported-reference integrity
+ 
+-## Vertical review
++- Source artifact: `ED-318-main.zip`
++- Commit SHA: unavailable because the supplied ZIP contains no `.git` metadata
++- Verification: all imported files match the supplied archive byte-for-byte
++- Schema files imported: 8
++- Example/helper files imported: 12
++- Retained top-level upstream files: README and MIT licence
++- Excluded metadata: two `.DS_Store` files
+ 
+-- Each zone may contain multiple vertical layers.
+-- A query matches if any vertical layer contains the altitude.
+-- Unit handling is currently limited to metres (`M`).
+-- Unlimited limits are represented with `null` values.
+-- No AGL/AMSL conversion is attempted.
++The provenance manifest is `vendor/ED-318/PROVENANCE.yaml`.
+ 
+-## Temporal review
++## Static checks performed
+ 
+-- Fixed RFC 3339 UTC start/end periods are supported.
+-- A zone with no time periods is treated as continuously active.
+-- Recurring daily periods, weekdays, sunrise, and sunset are not implemented.
++- Complete baseline and upstream file inventory: **passed**
++- Full text review: **completed**
++- JSON parsing for 8 schemas, 9 upstream JSON examples/partials, and the retained synthetic sample: **passed**
++- Byte-for-byte comparison of imported reference files: **passed**
++- Full baseline-to-release diff generation: **passed**
++- Rust dependency review: **passed; no dependencies declared**
+ 
+-## Known implementation risk
++## Rust execution checks
+ 
+-This environment did not contain `rustc` or `cargo`, so compilation and test execution could not be performed here. The code was reviewed textually, but a successful local `cargo test` is still required before treating v0.1.0 as a working baseline.
++The release environment did not contain the `cargo` executable. Therefore these checks were **not run in this environment**:
+ 
+-## Compliance conclusion
++```text
++cargo fmt --check
++cargo check
++cargo clippy --all-targets --all-features -- -D warnings
++cargo test
++```
+ 
+-This version is suitable only as a learning scaffold. It does not claim ED-318, ED-318A, Transport Canada, NAV CANADA, Standard 922, or operational geo-awareness compliance.
++`src/main.rs`, `Cargo.toml`, and `Cargo.lock` were reviewed textually. The source is formatted in standard Rust style, but local execution remains required before accepting the release baseline.
++
++## Documentation assessment
++
++The repository now states:
++
++- what the project is and is not;
++- who the intended readers are;
++- how official sources remain immutable;
++- how schema validation, exact models, normalization, and country profiles remain separated;
++- how Canadian official, proposed, and experimental material is classified;
++- what provenance fields are required;
++- what each planned version must deliver before the next layer begins.
++
++## Known limitations and decisions requiring owner awareness
++
++1. The ED-318 source commit SHA cannot be proven from the supplied branch ZIP. The archive checksum is the immutable acquisition identifier for this release.
++2. The repository adopts MIT for project-authored material in v0.2.1. Third-party material remains under its retained licence.
++3. Country classifications are preliminary placeholders pending primary-source acquisition and review.
++4. The imported public schema repository is not equivalent to possessing or proving conformance with the complete EUROCAE standard.
++5. No CI workflow was added in this release.
++
++## Audit conclusion
++
++`v0.2.1` meets the intended scope of a documentation and provenance baseline. It is suitable to become the next accepted baseline after the owner runs the four Rust verification commands locally and confirms the licensing decision. Software implementation should begin only in the following version.
+--- a/samples/README.md
++++ b/samples/README.md
+@@ -1,7 +1,5 @@
+ # Samples
+ 
+-Small, human-readable files used for demonstrations, tutorials, command examples, and tests.
++`canada-learning-zones.json` is retained as a synthetic historical learning fixture. It is not official Canadian data, not an ED-318 conformance example, and not evidence of Transport Canada or NAV CANADA policy.
+ 
+-Samples may be synthetic or reduced copies, but their origin must be stated clearly.
+-
+-Large national datasets belong under `datasets/`, not here.
++Future official examples remain under the imported ED-318 reference. New project-generated fixtures should normally be placed under `datasets/generated/` and carry explicit provenance.
+--- a/schemas/README.md
++++ b/schemas/README.md
+@@ -1 +1,5 @@
+-Place ED-318 schema snapshots here with provenance.
++# Schemas
++
++`ed-318/` contains unchanged JSON Schema files copied from the uploaded `ED-318-main.zip` archive for deterministic future validation.
++
++Provenance and checksums are recorded in `vendor/ED-318/PROVENANCE.yaml`. Do not edit these files in place. Import upstream changes as a newly identified snapshot and review compatibility first.
+--- a/schemas/ed-318/Schema_GeoJSONGeometries.json
++++ b/schemas/ed-318/Schema_GeoJSONGeometries.json
+@@ -0,0 +1,251 @@
++{
++    "$schema": "http://json-schema.org/draft-07/schema#",
++    "title": "Any one of the GeoJSON geometry types, including LayeredGeoJSON validation.",
++  "definitions": {
++    "normalGeometry": {
++      "allOf": [
++        {
++          "oneOf": [
++            {"type": "null"},
++            {
++            "title": "GeoJSON Point with LayeredGeoJSON extent validation",
++            "type": "object",
++            "required": [
++                "type",
++                "coordinates"
++            ],
++            "properties": {
++                "type": {
++                    "type": "string",
++                    "enum": ["Point"]
++                },
++                "coordinates": {
++                    "type": "array",
++                    "minItems": 2,
++                    "items": {"type": "number"}
++                },
++                "bbox": {
++                    "type": "array",
++                    "minItems": 4,
++                    "items": {"type": "number"}
++                }
++                },
++                "extent": {
++                  "type": "object",
++                  "required": [
++                    "subType",
++                    "radius"
++                  ],
++                  "properties": {
++                    "subType": {
++                      "type": "string",
++                      "enum": [
++                        "Circle"
++                      ]
++                    },
++                    "radius": {
++                      "type": "number"
++                    }
++                  }
++            }
++        },
++        {
++            "title": "GeoJSON LineString",
++            "type": "object",
++            "required": [
++                "type",
++                "coordinates"
++            ],
++            "properties": {
++                "type": {
++                    "type": "string",
++                    "enum": ["LineString"]
++                },
++                "coordinates": {
++                    "type": "array",
++                    "minItems": 2,
++                    "items": {
++                        "type": "array",
++                        "minItems": 2,
++                        "items": {"type": "number"}
++                    }
++                },
++                "bbox": {
++                    "type": "array",
++                    "minItems": 4,
++                    "items": {"type": "number"}
++                }
++            }
++        },
++        {
++            "title": "GeoJSON Polygon",
++            "type": "object",
++            "required": [
++                "type",
++                "coordinates"
++            ],
++            "properties": {
++                "type": {
++                    "type": "string",
++                    "enum": ["Polygon"]
++                },
++                "coordinates": {
++                    "type": "array",
++                    "items": {
++                        "type": "array",
++                        "minItems": 4,
++                        "items": {
++                            "type": "array",
++                            "minItems": 2,
++                            "items": {"type": "number"}
++                        }
++                    }
++                },
++                "bbox": {
++                    "type": "array",
++                    "minItems": 4,
++                    "items": {"type": "number"}
++                }
++            }
++        },
++        {
++            "title": "GeoJSON MultiPoint",
++            "type": "object",
++            "required": [
++                "type",
++                "coordinates"
++            ],
++            "properties": {
++                "type": {
++                    "type": "string",
++                    "enum": ["MultiPoint"]
++                },
++                "coordinates": {
++                    "type": "array",
++                    "items": {
++                        "type": "array",
++                        "minItems": 2,
++                        "items": {"type": "number"}
++                    }
++                },
++                "bbox": {
++                    "type": "array",
++                    "minItems": 4,
++                    "items": {"type": "number"}
++                }
++            }
++        },
++        {
++            "title": "GeoJSON MultiLineString",
++            "type": "object",
++            "required": [
++                "type",
++                "coordinates"
++            ],
++            "properties": {
++                "type": {
++                    "type": "string",
++                    "enum": ["MultiLineString"]
++                },
++                "coordinates": {
++                    "type": "array",
++                    "items": {
++                        "type": "array",
++                        "minItems": 2,
++                        "items": {
++                            "type": "array",
++                            "minItems": 2,
++                            "items": {"type": "number"}
++                        }
++                    }
++                },
++                "bbox": {
++                    "type": "array",
++                    "minItems": 4,
++                    "items": {"type": "number"}
++                }
++            }
++        },
++        {
++            "title": "GeoJSON MultiPolygon",
++            "type": "object",
++            "required": [
++                "type",
++                "coordinates"
++            ],
++            "properties": {
++                "type": {
++                    "type": "string",
++                    "enum": ["MultiPolygon"]
++                },
++                "coordinates": {
++                    "type": "array",
++                    "items": {
++                        "type": "array",
++                        "items": {
++                            "type": "array",
++                            "minItems": 4,
++                            "items": {
++                                "type": "array",
++                                "minItems": 2,
++                                "items": {"type": "number"}
++                            }
++                        }
++                    }
++                },
++                "bbox": {
++                    "type": "array",
++                    "minItems": 4,
++                    "items": {"type": "number"}
++                }
++            }
++            }
++          ]
++        },
++        {
++          "$ref": "./Schema_LayeredGeoJSON.json"
++        }
++      ]
++    },
++    "geometryCollection": {
++      "allOf": [
++        {
++          "title": "GeoJSON GeometryCollection",
++          "type": "object",
++          "required": [
++            "type",
++            "geometries"
++          ],
++          "properties": {
++            "type": {
++              "type": "string",
++              "enum": ["GeometryCollection"]
++            },
++            "geometries": {
++              "type": "array",
++              "items": {
++                "$ref": "#/definitions/normalGeometry"
++              }
++            },
++            "bbox": {
++              "type": "array",
++              "minItems": 4,
++              "items": {"type": "number"}
++            }
++          }
++        },
++        {
++          "$ref": "./Schema_LayeredGeoJSON.json"
++        }
++      ]
++    }
++  },
++  "oneOf": [
++    {
++      "$ref": "#/definitions/normalGeometry"
++    },
++    {
++      "$ref": "#/definitions/geometryCollection"
++    }
++  ]
++}--- a/schemas/ed-318/Schema_GeoZoneAuthority.json
++++ b/schemas/ed-318/Schema_GeoZoneAuthority.json
+@@ -0,0 +1,47 @@
++{
++    "$schema": "http://json-schema.org/draft-07/schema#",
++    "title": "authority",
++    "type": "object",
++    "properties": {
++        "name": {
++            "type": "array",
++            "items": {
++                "minItems": 1,
++                "$ref": "./Schema_GeoZoneDataTypes.json#/definitions/textShortType"
++            }
++        },
++        "service": {
++            "type": "array",
++            "items": {
++                "minItems": 1,
++                "$ref": "./Schema_GeoZoneDataTypes.json#/definitions/textShortType"
++            }
++        },
++        "contactName": {
++            "type": "array",
++            "items": {
++                "minItems": 1,
++                "$ref": "./Schema_GeoZoneDataTypes.json#/definitions/textShortType"
++            }
++        },
++        "siteURL": {
++            "type": "string",
++            "format": "uri"
++        },
++        "email": {
++            "type": "string",
++            "format": "email"
++        },
++        "phone": {
++            "type": "string",
++            "maxLength": 200
++        },
++        "purpose": {"$ref": "./Schema_GeoZoneDataTypes.json#/definitions/authorityRole"},
++        "intervalBefore": {
++            "description": "A period of time expressed according to the ISO 8601 rules for time intervals.",
++            "type": "string",
++            "format": "duration"
++        }
++    },
++    "required": ["purpose"]
++}--- a/schemas/ed-318/Schema_GeoZoneCollectionMetadata.json
++++ b/schemas/ed-318/Schema_GeoZoneCollectionMetadata.json
+@@ -0,0 +1,42 @@
++{
++    "$schema": "http://json-schema.org/draft-07/schema#",
++    "title": "collection metadata",
++    "type": "object",
++    "properties": {
++        "validFrom": {
++            "type": "string",
++            "format": "date-time"
++        },
++        "validTo": {
++            "type": "string",
++            "format": "date-time"
++        },
++        "issued": {
++            "type": "string",
++            "format": "date-time"
++        },
++        "provider": {
++            "type": "array",
++            "items": {
++                "minItems": 1,
++                "$ref": "./Schema_GeoZoneDataTypes.json#/definitions/textShortType"
++            }
++        },
++        "description": {
++            "type": "array",
++            "items": {
++                "minItems": 1,
++                "$ref": "./Schema_GeoZoneDataTypes.json#/definitions/textShortType"
++            }
++        },
++        "otherGeoid": {"$ref": "./Schema_GeoZoneDataTypes.json#/definitions/URNType"},
++        "technicalLimitations": {
++            "type": "array",
++            "items": {
++                "minItems": 1,
++                "$ref": "./Schema_GeoZoneDataTypes.json#/definitions/textShortType"
++            }
++        }
++    },
++    "required": []
++}
+--- a/schemas/ed-318/Schema_GeoZoneDataTypes.json
++++ b/schemas/ed-318/Schema_GeoZoneDataTypes.json
+@@ -0,0 +1,127 @@
++{
++    "$schema": "http://json-schema.org/draft-07/schema#",
++    "title": "geoZonesDataTypes",
++    "type": "object",
++    "additionalProperties": false,
++    "definitions": {
++        "zoneType": {
++            "type": "string",
++            "enum": [
++                "USPACE",
++                "PROHIBITED",
++                "REQ_AUTHORIZATION",
++                "CONDITIONAL",
++                "NO_RESTRICTION"
++            ]
++        },
++        "zoneVariant": {
++            "type": "string",
++            "enum": [
++                "COMMON",
++                "CUSTOMIZED"
++            ]
++        },
++        "zoneReason" : {
++            "type": "array",
++            "maxItems": 9,
++            "items": {
++                "type": "string",
++                "enum": [
++                    "AIR_TRAFFIC",
++                    "SENSITIVE",
++                    "PRIVACY",
++                    "POPULATION",
++                    "NATURE",
++                    "NOISE",
++                    "EMERGENCY",
++                    "DAR",
++                    "OTHER"
++                ]
++            }
++        },
++        "weekDayType": {
++            "type": "string",
++            "enum": [
++                "MON",
++                "TUE",
++                "WED",
++                "THU",
++                "FRI",
++                "SAT",
++                "SUN",
++                "ANY"
++            ]
++        },
++        "daylightEventType": {
++            "type": "string",
++            "enum": [
++                "BMCT",
++                "SR",
++                "SS",
++                "EECT"
++            ]
++        },
++        "authorityRole": {
++            "type": "string",
++            "enum": [
++                "AUTHORIZATION",
++                "NOTIFICATION",
++                "INFORMATION"
++            ]
++        },
++        "yesNoType" : {
++            "type": "string",
++            "enum": [
++                "YES",
++                "NO"
++            ]
++        },
++        "textShortType": {
++            "type": "object",
++            "properties": {
++                "text": {
++                    "type": "string",
++                    "maxLength": 200
++                },
++                "lang": {
++                    "type": "string",
++                    "maxLength": 5
++                }
++            },
++            "required": ["lang"]
++        },
++        "textLongType": {
++            "type": "object",
++            "properties": {
++                "text": {
++                    "type": "string",
++                    "maxLength": 1000
++                },
++                "lang": {
++                    "type": "string",
++                    "maxLength": 5
++                }
++            },
++            "required": ["lang"]
++        },
++        "URNType": {"type": "string"},
++        "metadata": {
++            "type": "object",
++            "properties": {
++                "creationDate": {
++                    "type": "string",
++                    "format": "DateTimeType"
++                },
++                "updateDateTime": {
++                    "type": "string",
++                    "format": "DateTimeType"
++                },
++                "originator": {
++                    "$ref": "#/definitions/textShortType"
++                }
++            }
++        }
++    },
++    "properties": {},
++    "required": []
++}--- a/schemas/ed-318/Schema_GeoZoneProperties.json
++++ b/schemas/ed-318/Schema_GeoZoneProperties.json
+@@ -0,0 +1,62 @@
++{
++    "$schema": "http://json-schema.org/draft-07/schema#",
++    "title": "UASZoneVersion",
++    "type": "object",
++    "properties": {
++        "identifier": {
++            "type": "string",
++            "maxLength": 7
++        },
++        "country": {
++            "type": "string",
++            "minLength": 3,
++            "maxLength": 3
++        },
++        "name": {
++            "type": "array",
++            "items": {
++                "minItems": 1,
++                "$ref": "./Schema_GeoZoneDataTypes.json#/definitions/textShortType"
++            }
++        },
++        "type": {"$ref": "./Schema_GeoZoneDataTypes.json#/definitions/zoneType"},
++        "variant": {"$ref": "./Schema_GeoZoneDataTypes.json#/definitions/zoneVariant"},
++        "restrictionConditions": {"type": "string"},
++        "region": {"type": "integer"},
++        "reason": {"$ref": "./Schema_GeoZoneDataTypes.json#/definitions/zoneReason"},
++        "otherReasonInfo": {
++            "type": "array",
++            "items": {
++                "minItems": 1,
++                "$ref": "./Schema_GeoZoneDataTypes.json#/definitions/textShortType"
++            }
++        },
++        "regulationExemption": {"$ref": "./Schema_GeoZoneDataTypes.json#/definitions/yesNoType"},
++        "message": {
++            "type": "array",
++            "items": {
++                "minItems": 1,
++                "$ref": "./Schema_GeoZoneDataTypes.json#/definitions/textShortType"
++            }
++        },
++        "zoneAuthority": {
++            "type": "array",
++            "items": {"$ref": "./Schema_GeoZoneAuthority.json"},
++            "minItems": 1
++        },
++        "limitedApplicability": {
++            "type": "array",
++            "items": {"$ref": "./Schema_GeoZoneTimePeriod.json"}
++        },
++        "dataSource": {"$ref": "./Schema_GeoZoneDataTypes.json#/definitions/metadata"},
++        "extendedProperties": {"type": "object"}
++    },
++    "required": [
++        "identifier",
++        "country",
++        "type",
++        "variant",
++        "zoneAuthority"
++    ],
++    "additionalProperties": false
++}--- a/schemas/ed-318/Schema_GeoZoneTimePeriod.json
++++ b/schemas/ed-318/Schema_GeoZoneTimePeriod.json
+@@ -0,0 +1,58 @@
++{
++	"$schema": "http://json-schema.org/draft-07/schema#",
++	"title": "timePeriod",
++	"type": "object",
++	"definitions": {
++		"dailyPeriod": {
++			"type": "object",
++			"additionalProperties": false,
++			"required": [
++				"day"
++			],
++			"properties": {
++				"day": {
++					"type": "array",
++					"items": {
++						"minItems": 1,
++						"maxItems": 7,
++						"$ref": "./Schema_GeoZoneDataTypes.json#/definitions/weekDayType"
++					}
++				},
++				"startTime": {
++					"type": "string",
++					"format": "time"
++				},
++				"startEvent": {
++				   "$ref": "./Schema_GeoZoneDataTypes.json#/definitions/daylightEventType"
++				},
++				"endTime": {
++					"type": "string",
++					"format": "time"
++				},
++				"endEvent": {
++				   "$ref": "./Schema_GeoZoneDataTypes.json#/definitions/daylightEventType"
++				}
++			}
++		}
++	},
++	"properties": {
++		"startDateTime": {
++			"type": "string",
++			"format": "date-time"
++		},
++		"endDateTime": {
++			"type": "string",
++			"format": "date-time"
++		},
++		"schedule": {
++			"type": "array",
++			"items": {
++				"minItems": 1,
++				"$ref": "#/definitions/dailyPeriod"
++			}
++		}
++	},
++	"additionalProperties": false,
++	"required": []
++	
++}--- a/schemas/ed-318/Schema_GeoZones.json
++++ b/schemas/ed-318/Schema_GeoZones.json
+@@ -0,0 +1,66 @@
++{
++    "$schema": "http://json-schema.org/draft-07/schema#",
++    "title": "GeoJSON FeatureCollection",
++    "type": "object",
++    "required": [
++        "type",
++        "features"
++    ],
++    "properties": {
++        "type": {
++            "type": "string",
++            "enum": ["FeatureCollection"]
++        },
++        "name": {
++            "type": "string",
++            "maxLength": 200
++        },
++        "bbox": {
++            "type": "array",
++            "minItems": 4,
++            "items": {"type": "number"}
++        },
++        "metadata": {"$ref": "./Schema_GeoZoneCollectionMetadata.json"},
++        "features": {
++            "type": "array",
++            "items": {
++                "title": "GeoJSON Feature",
++                "type": "object",
++                "required": [
++                    "type",
++                    "properties",
++                    "geometry"
++                ],
++                "properties": {
++                    "type": {
++                        "type": "string",
++                        "enum": ["Feature"]
++                    },
++                    "id": {
++                        "oneOf": [
++                            {"type": "number"},
++                            {"type": "string"}
++                        ]
++                    },
++                    "properties": {
++                        "oneOf": [
++                            {"type": "null"},
++                            {"$ref": "./Schema_GeoZoneProperties.json"}
++                        ]
++                    },
++                    "geometry": {
++                        "oneOf": [
++                            {"type": "null"},
++                            {"$ref": "./Schema_GeoJSONGeometries.json"}
++                        ]
++                    },
++                    "bbox": {
++                        "type": "array",
++                        "minItems": 4,
++                        "items": {"type": "number"}
++                    }
++                }
++            }
++        }
++    }
++}
+--- a/schemas/ed-318/Schema_LayeredGeoJSON.json
++++ b/schemas/ed-318/Schema_LayeredGeoJSON.json
+@@ -0,0 +1,47 @@
++{
++  "$schema": "http://json-schema.org/draft-07/schema#",
++  "title": "LayeredGeoJSON members",
++  "description": "A vertical layer extent for all standard GeoJSON geometries",
++  "type": "object",
++  "definitions": {
++    "verticalReference": {
++      "description": "A code indicating a vertical reference system. Allowed values:\nAGL = Above ground level (or above water surface, as applicable)\nAMSL = Above Mean Sea Level\nWGS84 = Above the surface of the WGS-84 ellipsoid (Ellipsoidal height)",
++      "type": "string",
++      "enum": [
++        "AGL",
++        "AMSL",
++        "WGS84"
++      ]
++    }
++  },
++  "properties": {
++    "layer": {
++      "type": "object",
++      "properties": {
++        "upper": {
++          "description": "The value of the upper limit of the airspace layer expressed in metres (m) or feet (ft), in relation with the vertical datum specified in the upperReference property. A positive value is interpreted as meaning \"above\" the reference surface.",
++          "type": "number"
++        },
++        "upperReference": {
++          "$ref": "#/definitions/verticalReference"
++        },
++        "lower": {
++          "description": "The value of the lower limit of the airspace layer expressed in metres (m) or feet (ft), in relation with the vertical datum specified in the lowerReference property. A positive value is interpreted as meaning \"above\" the reference surface.",
++          "type": "number"
++        },
++        "lowerReference": {
++          "$ref": "#/definitions/verticalReference"
++        },
++        "uom": {
++          "description": "The unit of measurement in which the upper and lower values are expressed. Allowable values:\nm = metres\nft = feet\nIf this member is not specified, the units should be assumed to be metres.",
++          "type": "string",
++          "enum": [
++            "m",
++            "ft"
++          ],
++          "default": "m"
++        }
++      }
++    }
++  }
++}--- a/src/main.rs
++++ b/src/main.rs
+@@ -1 +1,3 @@
+-fn main(){println!("ed318-canada-lab foundation");}
++fn main() {
++    println!("ed318-canada-lab foundation");
++}
+--- a/tests/README.md
++++ b/tests/README.md
+@@ -1 +1,7 @@
+-Parser and validation tests.
++# Tests
++
++Automated tests will be added with software capabilities.
++
++Planned suites include schema-resolution tests, official valid/invalid example tests, exact-model round trips, normalization traceability, geometry and time edge cases, CLI output/exit-code tests, and provenance integrity checks.
++
++v0.2.1 intentionally contains zero Rust tests because it adds no validator or parser behaviour.
+--- a/tools/README.md
++++ b/tools/README.md
+@@ -1 +1,5 @@
+-Utility scripts and helper tools.
++# Tools
++
++Future project utilities may support deterministic source import, SHA-256 inventory generation, provenance verification, schema-reference checks, and dataset inspection.
++
++Tools must not silently modify imported official files. Generated output must identify its source and tool version.
+--- a/vendor/ED-318/LICENSE
++++ b/vendor/ED-318/LICENSE
+@@ -0,0 +1,21 @@
++MIT License
++
++Copyright (c) 2023 Eduard Porosnicu. EUROCONTROL
++
++Permission is hereby granted, free of charge, to any person obtaining a copy
++of this software and associated documentation files (the "Software"), to deal
++in the Software without restriction, including without limitation the rights
++to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
++copies of the Software, and to permit persons to whom the Software is
++furnished to do so, subject to the following conditions:
++
++The above copyright notice and this permission notice shall be included in all
++copies or substantial portions of the Software.
++
++THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
++AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
++LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
++SOFTWARE.
+--- a/vendor/ED-318/PROVENANCE.yaml
++++ b/vendor/ED-318/PROVENANCE.yaml
+@@ -0,0 +1,62 @@
++record_version: 1
++artifact_id: ed-318-upstream-snapshot-2026-07-29
++artifact_type: reference_repository
++upstream_repository: https://github.com/eurocontrol-swim/ED-318
++source_archive: ED-318-main.zip
++source_archive_sha256: 504fb8f7b261a80330667e38a7aa4ee085088461986ebc4147638b9524d66687
++retrieved_at: 2026-07-29T17:28:00Z
++branch_name_in_archive: main
++commit_sha: unavailable
++commit_sha_note: "The supplied ZIP contains no .git metadata; no commit SHA is claimed."
++license: MIT
++license_path: vendor/ED-318/LICENSE
++modified: false
++copy_policy: "File contents copied byte-for-byte; paths reorganized to separate schemas from examples."
++excluded_entries:
++  - .DS_Store
++  - examples/.DS_Store
++files:
++  - path: schemas/ed-318/Schema_GeoJSONGeometries.json
++    sha256: 30a4f4f819cd7b036602c8bfd464fe91a1672944064c2f131caa04740be72388
++  - path: schemas/ed-318/Schema_GeoZoneAuthority.json
++    sha256: 1f9340e4ba0c9b1a51edd204e6a605ffc8b289a1d2be057792ea687247a0a895
++  - path: schemas/ed-318/Schema_GeoZoneCollectionMetadata.json
++    sha256: 0e3bd1fff12f7a24f26ab2d73a55027e15f9e15b290f7ba8df11f040178dd92d
++  - path: schemas/ed-318/Schema_GeoZoneDataTypes.json
++    sha256: 9c546b24d4774195ece09cf7054a19a77719ade603e6256fb66f38faf4f219cf
++  - path: schemas/ed-318/Schema_GeoZoneProperties.json
++    sha256: 6bb7bd9cc5a4712731f62b99cf17841c4365a4109b5d551159883ff996f1b718
++  - path: schemas/ed-318/Schema_GeoZoneTimePeriod.json
++    sha256: 73f801dfeb546a6be64c6943092f64076ef85d16a6f97cfb14c788e3d4af7302
++  - path: schemas/ed-318/Schema_GeoZones.json
++    sha256: 257e1405db4d661f489276a07acbf82616fb7faeab0d25fa0c25ddbc36802ba8
++  - path: schemas/ed-318/Schema_LayeredGeoJSON.json
++    sha256: 064e1c78ab41374c236a57005c09e03b209c43e787ac4dd084eda73e37fb1dce
++  - path: vendor/ED-318/LICENSE
++    sha256: 2c61b04edaa17ca72cede8ea37aab79358c345f26d7396454076c871eaf8fc98
++  - path: vendor/ED-318/README.md
++    sha256: 20975eb8d27787266717bc57a280a991b0430e8ce69f3325cd728fbe08090b08
++  - path: vendor/ED-318/examples/Dockerfile
++    sha256: 9015f68c0dac554b00312176cac73a556648ba4f548b70eb9be08b79d8b48e50
++  - path: vendor/ED-318/examples/Example_Collection.json
++    sha256: cf40aed8a8c8e0719939137c36bcda7f1474a1ef7d84b55414d731c9cc74ce03
++  - path: vendor/ED-318/examples/Example_GeoZone_2_Layers.json
++    sha256: 9b1aa0941199f28100d631f20f2d73b827368b733eae71c478acea32e8af8fc3
++  - path: vendor/ED-318/examples/Example_GeoZone_Circle.json
++    sha256: 2807d5131030aad535896f28c668be846a9b823e7f939b60122fb71e2e741a25
++  - path: vendor/ED-318/examples/Example_GeoZone_with_extension.json
++    sha256: a72b318e4882981d92ecc4c769f05e3de823b7f400ccba4a47dfdd28115c05cd
++  - path: vendor/ED-318/examples/InvalidExample_GeoZone_2_Layers.json
++    sha256: a9ee0e6fb044273f237abdd65ec63aa0069f83ac9b834ee2a63048c613ac5645
++  - path: vendor/ED-318/examples/PartialExample_GeoZoneProperties.json
++    sha256: 13e071d9a21f3970287b30359b5b2d8c2ab464829689db62606e8841e797e3f2
++  - path: vendor/ED-318/examples/PartialExample_TimePeriod.json
++    sha256: d9b73c3cd0b37838c7f9f1a4d887042285354d96b550ddc254261943e45fe974
++  - path: vendor/ED-318/examples/PartialExample_ZoneAuthority.json
++    sha256: 94ff6cd158d927a91d8d8c8f1a39cff61d2f8a89226ee3cf3c3af7a5948a2edc
++  - path: vendor/ED-318/examples/PartialExample_featureGeoJSON.json
++    sha256: 004fcfcc5c6587222fd96b95ad859eb2178723c9d351498a5a54f44a876dfda5
++  - path: vendor/ED-318/examples/requirements.txt
++    sha256: d644634bead3495af2e0701cd8e753c7535bf981501ee782ed07c39728b45279
++  - path: vendor/ED-318/examples/validate_examples.py
++    sha256: 94bcef8d5dc3945ca141d647f10f3461809c2c3e8f025e56125bc64ebd19bea1
+--- a/vendor/ED-318/README.md
++++ b/vendor/ED-318/README.md
+@@ -0,0 +1,5 @@
++# ED-318
++Repository for the ED-318 GeoZones Schema
++
++# Acknoledgement
++This work re-uses parts of the GeoJSON schema: https://github.com/geojson/schema
+--- a/vendor/ED-318/examples/Dockerfile
++++ b/vendor/ED-318/examples/Dockerfile
+@@ -0,0 +1,10 @@
++# To run validation using a Docker environment:
++#   docker container run $(docker image build -f examples/Dockerfile -q .)
++
++FROM python:3.8-slim
++
++COPY ./examples/requirements.txt /app/examples/requirements.txt
++RUN pip install -r /app/examples/requirements.txt
++ADD ./ /app
++
++CMD ["python", "/app/examples/validate_examples.py"]
+--- a/vendor/ED-318/examples/Example_Collection.json
++++ b/vendor/ED-318/examples/Example_Collection.json
+@@ -0,0 +1,193 @@
++{
++    "type": "FeatureCollection",
++    "name": "SampleUAS GeoZones",
++    "metadata": {
++        "validFrom": "2018-12-31T15:59:59Z",
++        "issued": "2018-12-01T15:59:59Z"
++    },
++    "features": [
++        {
++            "type": "Feature",
++            "geometry": {
++                "type": "GeometryCollection",
++                "geometries": [
++                    {
++                        "type": "Polygon",
++                        "coordinates": [
++                            [
++                                [
++                                    2.585866,
++                                    49.029301
++                                ],
++                                [
++                                    2.610414,
++                                    48.983358
++                                ],
++                                [
++                                    2.731263,
++                                    48.987301
++                                ],
++                                [
++                                    2.704141,
++                                    49.044704
++                                ],
++                                [
++                                    2.585866,
++                                    49.029301
++                                ]
++                            ]
++                        ],
++                        "layer": {
++                            "upper": 150,
++                            "upperReference": "AGL",
++                            "lower": 50,
++                            "lowerReference": "AGL",
++                            "uom": "m"
++                        }
++                    },
++                    {
++                        "type": "Polygon",
++                        "coordinates": [
++                            [
++                                [
++                                    2.595866,
++                                    49.024301
++                                ],
++                                [
++                                    2.701263,
++                                    49.007301
++                                ],
++                                [
++                                    2.664141,
++                                    49.034704
++                                ],
++                                [
++                                    2.595866,
++                                    49.024301
++                                ]
++                            ]
++                        ],
++                        "layer": {
++                            "upper": 50,
++                            "upperReference": "AGL",
++                            "lower": 0,
++                            "lowerReference": "AGL",
++                            "uom": "m"
++                        }
++                    }
++                ]
++            },
++            "properties": {
++                "identifier": "NFZ6547",
++                "country": "FRA",
++                "name": [
++                    {"text": "LFPG-2", 
++                    "lang": "en-GB"}
++                ],
++                "variant": "COMMON",
++                "type": "REQ_AUTHORIZATION",
++                "reason": [
++                    "AIR_TRAFFIC",
++                    "OTHER"
++                ],
++                "otherReasonInfo": [
++                    {
++                        "text": "Flying Whales - part 2",
++                        "lang": "en-GB"
++                    },
++                    {
++                        "text": "Baleines Volantes 2-ème partie",
++                        "lang": "fr-BE"
++                    }
++                ],
++                "limitedApplicability": [
++                    {
++                        "startDateTime": "2018-12-31T15:59:59Z",
++                        "endDateTime": "2019-12-31T15:59:59Z",
++                        "schedule": [
++                            {
++                                "day": ["ANY"],
++                                "startTime": "16:00:00Z",
++                                "endTime": "17:00:00Z"
++                            },
++                            {
++                                "day": ["SUN"],
++                                "startTime": "10:00:00Z",
++                                "endTime": "12:00:00Z"
++                            }
++                        ]
++                    }
++                ],
++                "zoneAuthority": [
++                    {
++                        "name": [
++                            {
++                                "text": "LFPG-UASZoneManager",
++                                "lang": "en-US"
++                            }
++                        ],
++                        "email": "UASZoneManager@lfpg.fr",
++                        "purpose": "AUTHORIZATION"
++                    }
++                ]
++            }
++        },
++        {
++            "type": "Feature",
++            "geometry": {
++                "type": "Point",
++                "coordinates": [
++                    2.636866,
++                    50.122901
++                ],
++                "extent": {
++                    "subType": "Circle",
++                    "radius": 3500
++                },
++                "layer": {
++                    "upper": 150,
++                    "upperReference": "AGL",
++                    "lower": 50,
++                    "lowerReference": "AGL",
++                    "uom": "m"
++                }
++            },
++            "properties": {
++                "identifier": "ABC1234",
++                "country": "FRA",
++                "name": [
++                    {"text": "Fictitious circle", 
++                    "lang": "en-GB"}
++                ],
++                "variant": "COMMON",
++                "type": "PROHIBITED",
++                "reason": [
++                    "POPULATION",
++                    "NATURE"
++                ],
++                "otherReasonInfo": [
++                    {
++                        "text": "Castle and nature reserve",
++                        "lang": "en-GB"
++                    },
++                    {
++                        "text": "Chateau et parc",
++                        "lang": "fr-BE"
++                    }
++                ],
++                "zoneAuthority": [
++                    {
++                        "name": [
++                            {
++                                "text": "LFPG-UASZoneManager",
++                                "lang": "en-US"
++                            }
++                        ],
++                        "email": "UASZoneManager@lfpg.fr",
++                        "purpose": "INFORMATION"
++                    }
++                ]
++            }
++        }
++    ]
++}
+--- a/vendor/ED-318/examples/Example_GeoZone_2_Layers.json
++++ b/vendor/ED-318/examples/Example_GeoZone_2_Layers.json
+@@ -0,0 +1,136 @@
++{
++    "type": "FeatureCollection",
++    "title": "SampleUAS GeoZones",
++    "metadata": {
++        "validFrom": "2018-12-31T15:59:59Z",
++        "issued": "2018-12-01T15:59:59Z"
++    },
++    "features": [
++        {
++            "type": "Feature",
++            "geometry": {
++                "type": "GeometryCollection",
++                "geometries": [
++                    {
++                        "type": "Polygon",
++                        "coordinates": [
++                            [
++                                [
++                                    2.585866,
++                                    49.029301
++                                ],
++                                [
++                                    2.610414,
++                                    48.983358
++                                ],
++                                [
++                                    2.731263,
++                                    48.987301
++                                ],
++                                [
++                                    2.704141,
++                                    49.044704
++                                ],
++                                [
++                                    2.585866,
++                                    49.029301
++                                ]
++                            ]
++                        ],
++                        "layer": {
++                            "upper": 150,
++                            "upperReference": "AGL",
++                            "lower": 50,
++                            "lowerReference": "AGL",
++                            "uom": "m"
++                        }
++                    },
++                    {
++                        "type": "Polygon",
++                        "coordinates": [
++                            [
++                                [
++                                    2.595866,
++                                    49.024301
++                                ],
++                                [
++                                    2.701263,
++                                    49.007301
++                                ],
++                                [
++                                    2.664141,
++                                    49.034704
++                                ],
++                                [
++                                    2.595866,
++                                    49.024301
++                                ]
++                            ]
++                        ],
++                        "layer": {
++                            "upper": 50,
++                            "upperReference": "AGL",
++                            "lower": 0,
++                            "lowerReference": "AGL",
++                            "uom": "m"
++                        }
++                    }
++                ]
++            },
++            "properties": {
++                "identifier": "NFZ6547",
++                "country": "FRA",
++                "name": [
++                    {"text": "LFPG-2",
++                    "lang": "en-GB"}
++                ],
++                "variant": "COMMON",
++                "type": "REQ_AUTHORIZATION",
++                "reason": [
++                    "AIR_TRAFFIC",
++                    "OTHER"
++                ],
++                "otherReasonInfo": [
++                    {
++                        "text": "Flying Whales - part 2",
++                        "lang": "en-GB"
++                    },
++                    {
++                        "text": "Baleines Volantes 2-ème partie",
++                        "lang": "fr-BE"
++                    }
++                ],
++                "limitedApplicability": [
++                    {
++                        "startDateTime": "2018-12-31T15:59:59Z",
++                        "endDateTime": "2019-12-31T15:59:59Z",
++                        "schedule": [
++                            {
++                                "day": ["ANY"],
++                                "startTime": "16:00:00Z",
++                                "endTime": "17:00:00Z"
++                            },
++                            {
++                                "day": ["SUN"],
++                                "startTime": "10:00:00Z",
++                                "endTime": "12:00:00Z"
++                            }
++                        ]
++                    }
++                ],
++                "zoneAuthority": [
++                    {
++                        "name": [
++                            {
++                                "text": "LFPG-UASZoneManager",
++                                "lang": "en-US"
++                            }
++                        ],
++                        "email": "UASZoneManager@lfpg.fr",
++                        "purpose": "AUTHORIZATION"
++                    }
++                ]
++            }
++        }
++    ]
++}
+--- a/vendor/ED-318/examples/Example_GeoZone_Circle.json
++++ b/vendor/ED-318/examples/Example_GeoZone_Circle.json
+@@ -0,0 +1,67 @@
++{
++    "type": "FeatureCollection",
++    "title": "SampleUAS GeoZones",
++    "metadata": {
++        "validFrom": "2018-12-31T15:59:59Z",
++        "issued": "2018-12-01T15:59:59Z"
++    },
++    "features": [
++        {
++            "type": "Feature",
++            "geometry": {
++                "type": "Point",
++                "coordinates": [
++                    2.636866,
++                    50.122901
++                ],
++                "extent": {
++                    "subType": "Circle",
++                    "radius": 3500
++                },
++                "layer": {
++                    "upper": 150,
++                    "upperReference": "AGL",
++                    "lower": 50,
++                    "lowerReference": "AGL",
++                    "uom": "m"
++                }
++            },
++            "properties": {
++                "identifier": "ABC1234",
++                "country": "FRA",
++                "name": [
++                    {"text": "Fictitious circle",
++                    "lang": "en-GB"}
++                ],
++                "variant": "COMMON",
++                "type": "PROHIBITED",
++                "reason": [
++                    "POPULATION",
++                    "NATURE"
++                ],
++                "otherReasonInfo": [
++                    {
++                        "text": "Castle and nature reserve",
++                        "lang": "en-GB"
++                    },
++                    {
++                        "text": "Chateau et parc",
++                        "lang": "fr-BE"
++                    }
++                ],
++                "zoneAuthority": [
++                    {
++                        "name": [
++                            {
++                                "text": "LFPG-UASZoneManager",
++                                "lang": "en-US"
++                            }
++                        ],
++                        "email": "UASZoneManager@lfpg.fr",
++                        "purpose": "INFORMATION"
++                    }
++                ]
++            }
++        }
++    ]
++}
+--- a/vendor/ED-318/examples/Example_GeoZone_with_extension.json
++++ b/vendor/ED-318/examples/Example_GeoZone_with_extension.json
+@@ -0,0 +1,70 @@
++{
++    "type": "FeatureCollection",
++    "title": "SampleUAS GeoZones",
++    "metadata": {
++        "validFrom": "2018-12-31T15:59:59Z",
++        "issued": "2018-12-01T15:59:59Z"
++    },
++    "features": [
++        {
++            "type": "Feature",
++            "geometry": {
++                "type": "Point",
++                "coordinates": [
++                    2.636866,
++                    50.122901
++                ],
++                "extent": {
++                    "subType": "Circle",
++                    "radius": 3500
++                },
++                "layer": {
++                    "upper": 150,
++                    "upperReference": "AGL",
++                    "lower": 50,
++                    "lowerReference": "AGL",
++                    "uom": "m"
++                }
++            },
++            "properties": {
++                "identifier": "ABC1234",
++                "country": "FRA",
++                "name": [
++                    {"text": "Fictitious circle",
++                    "lang": "en-GB"}
++                ],
++                "variant": "COMMON",
++                "type": "PROHIBITED",
++                "reason": [
++                    "POPULATION",
++                    "NATURE"
++                ],
++                "otherReasonInfo": [
++                    {
++                        "text": "Castle and nature reserve",
++                        "lang": "en-GB"
++                    },
++                    {
++                        "text": "Chateau et parc",
++                        "lang": "fr-BE"
++                    }
++                ],
++                "zoneAuthority": [
++                    {
++                        "name": [
++                            {
++                                "text": "LFPG-UASZoneManager",
++                                "lang": "en-US"
++                            }
++                        ],
++                        "email": "UASZoneManager@lfpg.fr",
++                        "purpose": "INFORMATION"
++                    }
++                ],
++                "extendedProperties": {
++                    "airspaceColour": "red"
++                }
++            }
++        }
++    ]
++}
+--- a/vendor/ED-318/examples/InvalidExample_GeoZone_2_Layers.json
++++ b/vendor/ED-318/examples/InvalidExample_GeoZone_2_Layers.json
+@@ -0,0 +1,137 @@
++{
++  "type": "FeatureCollection",
++  "title": "SampleUAS GeoZones",
++  "metadata": {
++    "validFrom": {
++      "purposely_invalid": "This object is not a datetime"
++    },
++    "issued": "2018-12-01T15:59:59Z"
++  },
++  "features": [
++    {
++      "type": "Feature",
++      "geometry": {
++        "type": "GeometryCollection",
++        "geometries": [
++          {
++            "type": "Polygon",
++            "coordinates": [
++              [
++                [
++                  2.585866,
++                  49.029301
++                ],
++                [
++                  2.610414,
++                  48.983358
++                ],
++                [
++                  2.731263,
++                  48.987301
++                ],
++                [
++                  2.704141,
++                  49.044704
++                ],
++                [
++                  2.585866,
++                  49.029301
++                ]
++              ]
++            ],
++            "layer": {
++              "upper": 150,
++              "upperReference": "AGL",
++              "lower": 50,
++              "lowerReference": "AGL",
++              "uom": "m"
++            }
++          },
++          {
++            "type": "Polygon",
++            "coordinates": [
++              [
++                [
++                  2.595866,
++                  49.024301
++                ],
++                [
++                  2.701263,
++                  49.007301
++                ],
++                [
++                  2.664141,
++                  49.034704
++                ],
++                [
++                  2.595866,
++                  49.024301
++                ]
++              ]
++            ],
++            "layer": {
++              "upper": 50,
++              "upperReference": "AGL",
++              "lower": 0,
++              "lowerReference": "AGL",
++              "uom": "m"
++            }
++          }
++        ]
++      },
++      "properties": {
++        "identifier": "NFZ6547",
++        "country": "FRA",
++        "name": [
++          {"text": "LFPG-2"}
++        ],
++        "variant": "COMMON",
++        "type": "REQ_AUTHORISATION",
++        "reason": [
++          "AIR_TRAFFIC",
++          "OTHER"
++        ],
++        "otherReasonInfo": [
++          {
++            "text": "Flying Whales - part 2",
++            "lang": "en-GB"
++          },
++          {
++            "text": "Baleines Volantes 2-ème partie",
++            "lang": "fr-BE"
++          }
++        ],
++        "limitedApplicability": [
++          {
++            "startDateTime": "2018-12-31T15:59:59Z",
++            "endDateTime": "2019-12-31T15:59:59Z",
++            "schedule": [
++              {
++                "day": ["ANY"],
++                "startTime": "16:00:00Z",
++                "endTime": "17:00:00Z"
++              },
++              {
++                "day": ["SUN"],
++                "startTime": "10:00:00Z",
++                "endTime": "12:00:00Z"
++              }
++            ]
++          }
++        ],
++        "zoneAuthority": [
++          {
++            "name": [
++              {
++                "text": "LFPG-UASZoneManager",
++                "lang": "en-US"
++              }
++            ],
++            "email": "UASZoneManager@lfpg.fr",
++            "purpose": "AUTHORIZATION"
++          }
++        ]
++      }
++    }
++  ]
++}
+--- a/vendor/ED-318/examples/PartialExample_GeoZoneProperties.json
++++ b/vendor/ED-318/examples/PartialExample_GeoZoneProperties.json
+@@ -0,0 +1,54 @@
++{
++    "identifier": "NFZ6547",
++    "country": "FRA",
++    "name": [
++        {"text": "LFPG-2",
++        "lang": "en-GB"}
++    ],
++    "variant": "COMMON",
++    "type": "REQ_AUTHORIZATION",
++    "reason": [
++        "AIR_TRAFFIC",
++        "OTHER"
++    ],
++    "otherReasonInfo": [
++        {
++            "text": "Flying Whales - part 2",
++            "lang": "en-GB"
++        },
++        {
++            "text": "Baleines Volantes 2-ème partie",
++            "lang": "fr-BE"
++        }
++    ],
++    "limitedApplicability": [
++        {
++            "startDateTime": "2018-12-31T15:59:59Z",
++            "endDateTime": "2019-12-31T15:59:59Z",
++            "schedule": [
++                {
++                    "day": ["ANY"],
++                    "startTime": "16:00:00Z",
++                    "endTime": "17:00:00Z"
++                },
++                {
++                    "day": ["SUN"],
++                    "startTime": "10:00:00Z",
++                    "endTime": "12:00:00Z"
++                }
++            ]
++        }
++    ],
++    "zoneAuthority": [
++        {
++            "name": [
++                {
++                    "text": "LFPG-UASZoneManager",
++                    "lang": "en-US"
++                }
++            ],
++            "email": "UASZoneManager@lfpg.fr",
++            "purpose": "AUTHORIZATION"
++        }
++    ]
++}
+--- a/vendor/ED-318/examples/PartialExample_TimePeriod.json
++++ b/vendor/ED-318/examples/PartialExample_TimePeriod.json
+@@ -0,0 +1,16 @@
++{
++    "startDateTime": "2023-10-29T00:00:00Z",
++    "endDateTime": "2024-03-31T23:59:59Z",
++    "schedule": [
++        {
++            "day": ["ANY"],
++            "startTime": "16:00:00Z",
++            "endTime": "17:00:00Z"
++        },
++        {
++            "day": ["SUN"],
++            "startTime": "10:00:00Z",
++            "endTime": "12:00:00Z"
++        }
++    ]
++}
+--- a/vendor/ED-318/examples/PartialExample_ZoneAuthority.json
++++ b/vendor/ED-318/examples/PartialExample_ZoneAuthority.json
+@@ -0,0 +1,13 @@
++{
++    "name": [
++        {
++            "text": " Civil Aviation Authority",
++            "lang": "en-GB"
++        },
++        {
++            "text": " Civil Aviation Authority",
++            "lang": "fr-FR"
++        }
++    ],
++    "purpose": "NOTIFICATION"
++}--- a/vendor/ED-318/examples/PartialExample_featureGeoJSON.json
++++ b/vendor/ED-318/examples/PartialExample_featureGeoJSON.json
+@@ -0,0 +1,126 @@
++{
++    "type": "Feature",
++    "geometry": {
++        "type": "GeometryCollection",
++        "geometries": [
++            {
++                "type": "Polygon",
++                "coordinates": [
++                    [
++                        [
++                            2.585866,
++                            49.029301
++                        ],
++                        [
++                            2.610414,
++                            48.983358
++                        ],
++                        [
++                            2.731263,
++                            48.987301
++                        ],
++                        [
++                            2.704141,
++                            49.044704
++                        ],
++                        [
++                            2.585866,
++                            49.029301
++                        ]
++                    ]
++                ],
++                "layer": {
++                    "upper": 150,
++                    "upperReference": "AGL",
++                    "lower": 50,
++                    "lowerReference": "AGL",
++                    "uom": "m"
++                }
++            },
++            {
++                "type": "Polygon",
++                "coordinates": [
++                    [
++                        [
++                            2.595866,
++                            49.024301
++                        ],
++                        [
++                            2.701263,
++                            49.007301
++                        ],
++                        [
++                            2.664141,
++                            49.034704
++                        ],
++                        [
++                            2.595866,
++                            49.024301
++                        ]
++                    ]
++                ],
++                "layer": {
++                    "upper": 50,
++                    "upperReference": "AGL",
++                    "lower": 0,
++                    "lowerReference": "AGL",
++                    "uom": "m"
++                }
++            }
++        ]
++    },
++    "properties": {
++        "identifier": "NFZ6547",
++        "country": "FRA",
++        "name": [
++            {"text": "LFPG-2",
++             "lang": "en-GB"}
++        ],
++        "variant": "COMMON",
++        "type": "REQ_AUTHORIZATION",
++        "reason": [
++            "AIR_TRAFFIC",
++            "OTHER"
++        ],
++        "otherReasonInfo": [
++            {
++                "text": "Flying Whales - part 2",
++                "lang": "en-GB"
++            },
++            {
++                "text": "Baleines Volantes 2-ème partie",
++                "lang": "fr-BE"
++            }
++        ],
++        "limitedApplicability": [
++            {
++                "startDateTime": "2018-12-31T15:59:59Z",
++                "endDateTime": "2019-12-31T15:59:59Z",
++                "schedule": [
++                    {
++                        "day": ["ANY"],
++                        "startTime": "16:00:00Z",
++                        "endTime": "17:00:00Z"
++                    },
++                    {
++                        "day": ["SUN"],
++                        "startTime": "10:00:00Z",
++                        "endTime": "12:00:00Z"
++                    }
++                ]
++            }
++        ],
++        "zoneAuthority": [
++            {
++                "name": [
++                    {
++                        "text": "LFPG-UASZoneManager",
++                        "lang": "en-US"
++                    }
++                ],
++                "email": "UASZoneManager@lfpg.fr",
++                "purpose": "AUTHORIZATION"
++            }
++        ]
++    }
++}--- a/vendor/ED-318/examples/requirements.txt
++++ b/vendor/ED-318/examples/requirements.txt
+@@ -0,0 +1,2 @@
++jsonschema==4.17.3
++bc-jsonpath-ng==1.5.9
+--- a/vendor/ED-318/examples/validate_examples.py
++++ b/vendor/ED-318/examples/validate_examples.py
+@@ -0,0 +1,118 @@
++# Validation script to ensure that the examples validate against the defined schema.
++# See Dockerfile to run this script with Docker rather than setting up an environment with requirements.txt.
++
++import os.path
++from dataclasses import dataclass
++import json
++from pathlib import Path
++import sys
++from typing import List, Optional
++
++import bc_jsonpath_ng
++import jsonschema.validators
++
++
++@dataclass
++class ValidationError(object):
++    """Error encountered while validating an instance against a schema."""
++
++    message: str
++    """Validation error message."""
++
++    json_path: str
++    """Location of the data causing the validation error."""
++
++
++def _collect_errors(e: jsonschema.ValidationError) -> List[ValidationError]:
++    if e.context:
++        result = []
++        for child in e.context:
++            result.extend(_collect_errors(child))
++        return result
++    else:
++        return [ValidationError(message=e.message, json_path=e.json_path)]
++
++
++def validate(schema_path: str, object_path: str, instance: dict, instance_path: Optional[str] = None) -> List[ValidationError]:
++    with open(schema_path, "r") as f:
++        schema_content = json.load(f)
++
++    schema_matches = bc_jsonpath_ng.parse(object_path).find(schema_content)
++    if len(schema_matches) != 1:
++        raise ValueError(
++            f"Found {len(schema_matches)} matches to JSON path '{object_path}' within OpenAPI definition when expecting exactly 1 match"
++        )
++    schema = schema_matches[0].value
++
++    if instance_path is not None:
++        instance_matches = bc_jsonpath_ng.parse(instance_path).find(instance)
++        if len(instance_matches) != 1:
++            raise ValueError(
++                f"Found {len(instance_matches)} matches to JSON path '{instance_path}' within value to validate when expecting exactly 1 match"
++            )
++        value = instance_matches[0].value
++    else:
++        value = instance
++
++    validator_class = jsonschema.validators.validator_for(schema)
++    validator_class.check_schema(schema)
++
++    ref_resolver = jsonschema.RefResolver(f"{Path(schema_path).as_uri()}", schema_content)
++    validator = validator_class(schema, resolver=ref_resolver)
++    result = []
++    for e in validator.iter_errors(value):
++        result.extend(_collect_errors(e))
++    return result
++
++
++def main() -> bool:
++    root = os.path.realpath(os.path.join(os.path.split(__file__)[0], ".."))
++
++    # Columns:
++    #   * Example file minus extension
++    #   * JSONPath in example object
++    #   * Schema file minus extension
++    #   * JSONPath in schema
++    #   * Whether example file should validate successfully
++    to_validate = (
++        ("Example_GeoZone_2_Layers",         "$", "Schema_GeoZones",          "$", True),
++        ("Example_GeoZone_Circle",           "$", "Schema_GeoZones",          "$", True),
++        ("InvalidExample_GeoZone_2_Layers",  "$", "Schema_GeoZones",          "$", False),
++        ("PartialExample_featureGeoJSON",    "$", "Schema_GeoZones",          "$", True),
++        ("PartialExample_GeoZoneProperties", "$", "Schema_GeoZoneProperties", "$", True),
++        ("PartialExample_TimePeriod",        "$", "Schema_GeoZoneTimePeriod", "$", True),
++        ("PartialExample_ZoneAuthority",     "$", "Schema_GeoZoneAuthority",  "$", True),
++    )
++
++    success = True
++    for example, example_jsonpath, schema_file, schema_jsonpath, should_validate in to_validate:
++        schema_path = os.path.join(root, "schema", schema_file + ".json")
++        instance_path = os.path.join(root, "examples", example + ".json")
++        with open(instance_path, "r") as f:
++            instance_content = json.load(f)
++
++        errors = validate(schema_path, schema_jsonpath, instance_content, example_jsonpath)
++        if should_validate:
++            if errors:
++                print(f"{example}: {len(errors)} errors found")
++                for e in errors:
++                    print(f"  * {e.json_path}: {e.message}")
++                    print()
++                success = False
++            else:
++                print(f"{example}: No errors found.")
++        else:
++            if errors:
++                print(f"{example}: Correctly found {len(errors)} errors.")
++            else:
++                print(f"{example}: INCORRECTLY found no errors")
++                success = False
++
++    return success
++
++
++if __name__ == "__main__":
++    if main():
++        sys.exit(os.EX_OK)
++    else:
++        sys.exit(os.EX_SOFTWARE)
+--- a/vendor/README.md
++++ b/vendor/README.md
+@@ -1 +1,5 @@
+-Third-party schemas and reference material with version information.
++# Vendored References
++
++Third-party reference repositories are stored here with their original licences and provenance records.
++
++`ED-318/` contains unchanged non-schema files from the uploaded ED-318 archive. Schema files are available under `schemas/ed-318/`. Project commentary and tests belong outside the vendored snapshot.

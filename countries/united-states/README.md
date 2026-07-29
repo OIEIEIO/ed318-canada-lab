@@ -1,16 +1,13 @@
-# united-states
+# United States
 
-This directory contains country-specific documentation, provenance records,
-source links, implementation notes, and comparison material.
+## Baseline status
 
-Official source datasets must remain unchanged and should be stored under:
+- Classification: **Non-ED-318 comparison model candidate**
+- Source datasets imported: none
+- Provenance records completed: none
 
-`datasets/original/`
+United States geographical and UAS restriction publications are expected to require comparison without forcing ED-318 terminology. Evidence and source records are not yet imported.
 
-Normalized parser output belongs under:
+Official or authoritative source files belong under `datasets/original/` with a completed provenance record. Normalized output belongs under `datasets/normalized/`; synthetic fixtures belong under `datasets/generated/`.
 
-`datasets/normalized/`
-
-Synthetic or generated data belongs under:
-
-`datasets/generated/`
+This classification must be revised when primary-source evidence is added.

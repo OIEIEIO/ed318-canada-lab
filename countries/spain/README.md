@@ -1,16 +1,13 @@
-# spain
+# Spain
 
-This directory contains country-specific documentation, provenance records,
-source links, implementation notes, and comparison material.
+## Baseline status
 
-Official source datasets must remain unchanged and should be stored under:
+- Classification: **Unclassified pending source acquisition**
+- Source datasets imported: none
+- Provenance records completed: none
 
-`datasets/original/`
+Spain is an initial research target because public UAS geographical-zone publication practices may provide useful ED-318 comparison material. No conformance claim is made here.
 
-Normalized parser output belongs under:
+Official or authoritative source files belong under `datasets/original/` with a completed provenance record. Normalized output belongs under `datasets/normalized/`; synthetic fixtures belong under `datasets/generated/`.
 
-`datasets/normalized/`
-
-Synthetic or generated data belongs under:
-
-`datasets/generated/`
+This classification must be revised when primary-source evidence is added.

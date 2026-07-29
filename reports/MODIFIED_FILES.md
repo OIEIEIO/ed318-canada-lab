@@ -1,21 +1,4 @@
-# Diff Report
-
-## Comparison
-
-- Baseline: `ed318-canada-lab v0.2.0-foundation`
-- Target: `ed318-canada-lab v0.2.1`
-- Date: 2026-07-29
-- Full unified diff: [`FULL_DIFF.patch`](FULL_DIFF.patch)
-
-## Summary
-
-- Modified existing files: 28
-- Added files: 27
-- Removed files: 0
-- Rust dependencies added: 0
-- Runtime features added: 0
-
-## Modified files
+# Modified Existing Files
 
 - `CHANGELOG.md`
 - `CONTRIBUTING.md`
@@ -46,7 +29,7 @@
 - `tools/README.md`
 - `vendor/README.md`
 
-## Added files
+# Added Files
 
 - `datasets/PROVENANCE_SPEC.md`
 - `docs/architecture/ARCHITECTURE.md`
@@ -75,19 +58,3 @@
 - `vendor/ED-318/examples/PartialExample_featureGeoJSON.json`
 - `vendor/ED-318/examples/requirements.txt`
 - `vendor/ED-318/examples/validate_examples.py`
-
-## Removed files
-
-- None.
-
-## Semantic diff
-
-The release changes project documentation, provenance, licensing, release metadata, and imported reference material. The only Rust source change is formatting of the existing placeholder. No parser, validator, CLI command, data model, or query behaviour is introduced.
-
-## Imported content
-
-The added ED-318 files are copied byte-for-byte from `ED-318-main.zip`, except `.DS_Store` operating-system metadata, which was deliberately excluded and recorded in provenance.
-
-## Verification status
-
-JSON parsing and byte-for-byte import checks passed. Rust commands were not run because `cargo` was unavailable in the release environment. See `SEMANTIC_AUDIT.md` for the complete status.
