@@ -1,0 +1,28 @@
+profile: ireland
+source:
+  supplied_filename: uas_zones_ireland.geojson
+  publisher_from_dataset: Irish Aviation Authority
+  source_url: null
+  retrieval_date: null
+  byte_size: 7639550
+  sha256: aab6b7e10714cd1dba77bff086d004c8854a51a9c1b1693027d32529032db969
+  top_level_type: FeatureCollection
+  feature_count: 86
+  dataset_metadata:
+    issued: "2026-07-25T13:00:00+00:00"
+    validFrom: "2026-07-25T13:00:00+00:00"
+    technicalLimitation: null
+  licence_or_redistribution_terms: unverified
+sample:
+  path: samples/ireland-representative-sample.geojson
+  selection_method: zero-based feature indices
+  selected_indices: [0, 42, 85]
+  selected_identifiers: ["U74", "U5", "T43"]
+  serialization: UTF-8 JSON, two-space indentation, final newline
+  byte_size: 83694
+  sha256: a4e05997b866e24507209c18ef81e3add2fb0974e4eed3304a1526c70f3b8694
+  status: derived project sample; not an unchanged official publication
+uncertainties:
+  - Authoritative download URL was not recorded with the supplied file.
+  - Licence and redistribution terms require verification.
+  - No strict JSON Schema validation was performed in v0.3.0.

@@ -1,5 +1,5 @@
-# Vendored References
+# Vendored Reference Material
 
-Third-party reference repositories are stored here with their original licences and provenance records.
+`ED-318/` contains the unchanged imported GitHub reference material, including synthetic examples and its retained licence and provenance records.
 
-`ED-318/` contains unchanged non-schema files from the uploaded ED-318 archive. Schema files are available under `schemas/ed-318/`. Project commentary and tests belong outside the vendored snapshot.
+These files are reference artifacts, not national operational datasets.

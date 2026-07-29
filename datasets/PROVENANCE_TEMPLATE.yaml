@@ -1,0 +1,21 @@
+profile: country-name
+source:
+  publisher: null
+  source_url: null
+  retrieval_date: null
+  supplied_filename: null
+  byte_size: null
+  sha256: null
+  top_level_type: null
+  feature_count: null
+  licence_or_redistribution_terms: unverified
+sample:
+  path: null
+  selection_method: zero-based feature indices
+  selected_indices: []
+  selected_identifiers: []
+  serialization: UTF-8 JSON, two-space indentation, final newline
+  byte_size: null
+  sha256: null
+  status: derived project sample; not an unchanged official publication
+uncertainties: []

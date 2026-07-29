@@ -2,44 +2,56 @@
 
 ## Purpose
 
-`ed318-canada-lab` exists to make geographical-zone data engineering inspectable. It provides a place to compare standards, public datasets, schemas, national publication practices, parser behaviour, normalization choices, and proposed Canadian approaches without presenting project conclusions as regulatory fact.
+`ed318-canada-lab` exists to study ED-318 implementation strategies before attempting to automate them. The project treats national datasets, publication workflows, update lifecycles, distribution choices, and schema alignment as engineering evidence.
+
+## Reference before software
+
+A parser or validator should be designed only after the project understands both the reference model and real national publications. Version 0.3.0 therefore prioritizes evidence, terminology, provenance, and comparison over executable capability.
 
 ## Authority boundary
 
-This repository is not EUROCAE, Transport Canada, NAV CANADA, EUROCONTROL, the FAA, or another competent authority. It does not create legal requirements, operational permissions, or authoritative interpretations. Primary publications and official guidance always take precedence.
+This repository is not EUROCAE, Transport Canada, NAV CANADA, ENAIRE, the Irish Aviation Authority, Air Navigation Services of the Czech Republic, or another competent authority. It does not create legal requirements or operational permissions.
 
-## Evidence before interpretation
+## Evidence layers
 
-Claims about a country, schema, standard, or authority must identify their source. Where evidence is incomplete, the repository must say so. Compatibility conclusions must distinguish direct conformance evidence from engineering inference.
+The project keeps the following layers distinct:
 
-## Immutable source principle
+1. the ED-318 standard;
+2. machine-readable reference schemas;
+3. synthetic reference examples;
+4. real national implementations;
+5. project-authored samples and analysis;
+6. future Canadian proposals;
+7. later software implementations.
 
-Official or authoritative source files are stored unchanged. Their checksums are recorded at acquisition. Corrections, mappings, and transformations are written to separate files so the original evidence remains recoverable.
+No lower-authority layer may silently be presented as a higher-authority layer.
 
-## Layer separation
+## National implementation profiles
 
-The project keeps five concerns separate:
+A national profile includes more than JSON field names. It may include:
 
-1. **Source material** — files as published or supplied.
-2. **Schema validation** — whether a document satisfies the selected schema.
-3. **Exact wire model** — Rust types representing the official serialized structure.
-4. **Normalization** — project-defined structures that permit comparison across formats.
-5. **Profiles and interpretation** — country-specific or application-specific meaning.
+- the publishing authority;
+- source datasets and legal instruments;
+- thematic or regulatory organization;
+- geometry and vertical-limit representation;
+- update cadence and effective dates;
+- integrity mechanisms such as checksums;
+- full-file, tiled, or thematic distribution;
+- deviations from the reference schemas;
+- operational and technical limitations.
 
-A rule from a Canadian profile must never silently alter the ED-318 schema or exact wire model.
+## Immutable-source and derived-sample principle
 
-## National neutrality
+Complete source files are checked and described before sampling. Small repository samples are explicitly marked as derived. Their selection rule, source checksum, feature identifiers, and serialization method are recorded.
 
-Not every country publishes geographical-zone information using ED-318. Country material must be classified honestly as an ED-318 implementation, a compatible geographical-zone publication, a non-ED-318 comparison model, or a proposed/future profile.
+## Neutral comparison
 
-## Reproducibility
+The project does not rank countries as simply “correct” or “incorrect.” Ireland, Spain, and the Czech Republic demonstrate different implementation and publication strategies. Differences are documented as evidence for later engineering decisions.
 
-Every imported dataset or reference snapshot should record origin, retrieval time, version information, licence, checksums, and transformation history. Generated outputs should identify the exact source and tool version that produced them.
+## Canadian scope
 
-## Safety and operational scope
-
-The laboratory may eventually support validation and geo-awareness research, but it is not an aircraft command system, flight authorization service, navigation authority, or replacement for current aeronautical information. Operational integrations require separate safety analysis, requirements validation, verification, and regulatory acceptance.
+Canadian work remains a future strategy study unless and until an authoritative Canadian ED-318 publication exists. Proposed Canadian structures must be labelled as project proposals, not official policy.
 
 ## Change discipline
 
-Each accepted release identifies its baseline, modified files, intended semantic changes, checks performed, known limitations, and unresolved questions. Imported official reference files are treated as read-only snapshots; upstream updates are introduced as new, separately identified snapshots.
+Every accepted release identifies its baseline, reviewed files, modified files, semantic changes, checks, provenance additions, and unresolved risks.

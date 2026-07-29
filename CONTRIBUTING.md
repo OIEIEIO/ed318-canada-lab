@@ -2,11 +2,48 @@
 
 ## Before making changes
 
-Read `PROJECT_PHILOSOPHY.md`, `docs/architecture/ARCHITECTURE.md`, and `datasets/PROVENANCE_SPEC.md`. Changes must preserve the distinction between official sources, project implementation, normalized output, and national profiles.
+Read `PROJECT_PHILOSOPHY.md`, `docs/TERMINOLOGY.md`, `datasets/README.md`, and the relevant national implementation profile.
 
-## Development checks
+## Evidence discipline
 
-For Rust changes, run:
+Do not use the words “official schema,” “example schema,” or “country schema” without qualification. Use the controlled terminology in `docs/TERMINOLOGY.md`.
+
+Claims about national publications must identify the source evidence. Distinguish facts observed directly in supplied files from publisher-page metadata and from engineering interpretation.
+
+## External datasets
+
+Do not commit large national source files by default. Add:
+
+- a provenance manifest;
+- complete-file size and SHA-256 checksum;
+- authoritative download location where known;
+- retrieval date when known;
+- a deterministic derived sample when redistribution is appropriate;
+- a clear transformation disclosure.
+
+Never call a derived sample an unchanged official dataset.
+
+## Reference material
+
+Do not edit imported files under `schemas/ed-318/` or `vendor/ED-318/` in place. Introduce a separately identified snapshot when upstream material changes.
+
+## National profiles
+
+Use the common profile questions:
+
+- Who publishes the data?
+- What is the publication product?
+- How is it organized?
+- What geometry is used?
+- Where are vertical limits represented?
+- How are authorities and schedules represented?
+- What lifecycle and integrity information is published?
+- How closely does it resemble the reference schemas?
+- Which claims remain unverified?
+
+## Software changes
+
+Software capability is not part of v0.3.0. Future Rust changes require an approved design, tests, and these checks:
 
 ```bash
 cargo fmt --check
@@ -15,54 +52,14 @@ cargo clippy --all-targets --all-features -- -D warnings
 cargo test
 ```
 
-A contribution that changes behaviour must add or update automated tests. A documentation-only release may retain zero tests if it does not claim software capability.
-
-## Official and authoritative files
-
-Do not edit imported schemas, examples, licences, or source datasets in place. Introduce a new snapshot when upstream content changes. Record provenance and checksums before using the files.
-
-Project commentary about an official file belongs outside the imported snapshot.
-
-## Provenance
-
-Every new external file must identify, as available:
-
-- publisher or authority;
-- source URL;
-- retrieval date and time;
-- dataset or release version;
-- commit or immutable identifier;
-- licence or terms;
-- SHA-256 checksum;
-- whether the file was modified;
-- known gaps or uncertainty.
-
-Use `countries/PROVENANCE_TEMPLATE.yaml` and `datasets/PROVENANCE_SPEC.md`.
-
-## Country classifications
-
-Do not describe material as ED-318-compliant without evidence. Use the classifications defined in `docs/countries/COUNTRY_TEMPLATE.md`. Proposed and experimental Canadian content must not be placed in `profiles/canada/official/`.
-
-## Code design
-
-Keep validation, exact wire models, normalization, and country interpretation in separate modules. Avoid lossy transformations. Errors should identify the input location and actionable cause. New dependencies require a documented reason and licence review.
-
-## Documentation
-
-Update the README, architecture, roadmap, changelog, semantic audit, and diff report when a change affects their claims. Examples must state whether they are official, copied, normalized, or synthetic.
-
 ## Release audit
 
-Each release should include:
+Each release must record:
 
-- baseline and target versions;
+- accepted baseline and target version;
 - complete reviewed-file inventory;
-- modified-file list;
-- semantic changes and non-changes;
-- build, lint, format, and test results;
-- provenance changes;
-- unresolved risks.
-
-## Pull requests
-
-Keep changes focused. Explain why the change is needed, which layer it affects, which files were modified, what tests were run, and whether any external material was added.
+- modified, added, and removed files;
+- semantic changes and preserved behaviour;
+- dataset provenance and sampling changes;
+- validation and build checks actually run;
+- unresolved limitations.

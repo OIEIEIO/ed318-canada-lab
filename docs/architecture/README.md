@@ -1,3 +1,3 @@
-# Architecture Documentation
+# Architecture Documents
 
-The authoritative architecture description is [`ARCHITECTURE.md`](ARCHITECTURE.md). Diagrams and component-specific design records may be added here as implementation begins.
+Read `ARCHITECTURE.md` for the v0.3.0 evidence-first architecture and future software boundaries.

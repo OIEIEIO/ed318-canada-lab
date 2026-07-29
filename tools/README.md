@@ -1,5 +1,5 @@
 # Tools
 
-Future project utilities may support deterministic source import, SHA-256 inventory generation, provenance verification, schema-reference checks, and dataset inspection.
+No project software tool is implemented in v0.3.0.
 
-Tools must not silently modify imported official files. Generated output must identify its source and tool version.
+A future tool sequence may begin with a read-only dataset inspector, but parser and validator design remains intentionally deferred.

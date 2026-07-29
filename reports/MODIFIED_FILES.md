@@ -1,13 +1,48 @@
-# Modified Existing Files
+# v0.3.0 Changed File Inventory
+
+## Modified
 
 - `CHANGELOG.md`
 - `CONTRIBUTING.md`
 - `Cargo.lock`
 - `Cargo.toml`
-- `LICENSE`
 - `PROJECT_PHILOSOPHY.md`
 - `README.md`
 - `ROADMAP.md`
+- `datasets/PROVENANCE_SPEC.md`
+- `datasets/README.md`
+- `docs/architecture/ARCHITECTURE.md`
+- `docs/architecture/README.md`
+- `docs/standards/ED-318.md`
+- `docs/standards/README.md`
+- `schemas/README.md`
+- `src/main.rs`
+- `tests/README.md`
+- `tools/README.md`
+- `vendor/README.md`
+
+## Added
+
+- `canada/README.md`
+- `datasets/PROVENANCE_TEMPLATE.yaml`
+- `docs/IMPLEMENTATION_COMPARISON.md`
+- `docs/TERMINOLOGY.md`
+- `implementations/README.md`
+- `implementations/czech-republic/README.md`
+- `implementations/ireland/DOWNLOAD.md`
+- `implementations/ireland/PROVENANCE.yaml`
+- `implementations/ireland/README.md`
+- `implementations/ireland/samples/ireland-representative-sample.geojson`
+- `implementations/spain/DOWNLOAD.md`
+- `implementations/spain/PROVENANCE.yaml`
+- `implementations/spain/README.md`
+- `implementations/spain/samples/spain-aero-representative-sample.geojson`
+- `implementations/spain/samples/spain-infra-representative-sample.geojson`
+- `implementations/spain/samples/spain-urbano-representative-sample.geojson`
+- `reference/README.md`
+
+## Removed
+
 - `countries/PROVENANCE_TEMPLATE.yaml`
 - `countries/README.md`
 - `countries/canada/README.md`
@@ -15,46 +50,15 @@
 - `countries/ireland/README.md`
 - `countries/spain/README.md`
 - `countries/united-states/README.md`
-- `datasets/README.md`
-- `docs/architecture/README.md`
+- `datasets/generated/README.md`
+- `datasets/normalized/README.md`
+- `datasets/original/README.md`
 - `docs/canada/README.md`
-- `docs/countries/README.md`
-- `docs/standards/README.md`
-- `profiles/canada/README.md`
-- `reports/README.md`
-- `samples/README.md`
-- `schemas/README.md`
-- `src/main.rs`
-- `tests/README.md`
-- `tools/README.md`
-- `vendor/README.md`
-
-# Added Files
-
-- `datasets/PROVENANCE_SPEC.md`
-- `docs/architecture/ARCHITECTURE.md`
 - `docs/countries/COUNTRY_TEMPLATE.md`
-- `docs/standards/ED-318.md`
-- `schemas/ed-318/Schema_GeoJSONGeometries.json`
-- `schemas/ed-318/Schema_GeoZoneAuthority.json`
-- `schemas/ed-318/Schema_GeoZoneCollectionMetadata.json`
-- `schemas/ed-318/Schema_GeoZoneDataTypes.json`
-- `schemas/ed-318/Schema_GeoZoneProperties.json`
-- `schemas/ed-318/Schema_GeoZoneTimePeriod.json`
-- `schemas/ed-318/Schema_GeoZones.json`
-- `schemas/ed-318/Schema_LayeredGeoJSON.json`
-- `vendor/ED-318/LICENSE`
-- `vendor/ED-318/PROVENANCE.yaml`
-- `vendor/ED-318/README.md`
-- `vendor/ED-318/examples/Dockerfile`
-- `vendor/ED-318/examples/Example_Collection.json`
-- `vendor/ED-318/examples/Example_GeoZone_2_Layers.json`
-- `vendor/ED-318/examples/Example_GeoZone_Circle.json`
-- `vendor/ED-318/examples/Example_GeoZone_with_extension.json`
-- `vendor/ED-318/examples/InvalidExample_GeoZone_2_Layers.json`
-- `vendor/ED-318/examples/PartialExample_GeoZoneProperties.json`
-- `vendor/ED-318/examples/PartialExample_TimePeriod.json`
-- `vendor/ED-318/examples/PartialExample_ZoneAuthority.json`
-- `vendor/ED-318/examples/PartialExample_featureGeoJSON.json`
-- `vendor/ED-318/examples/requirements.txt`
-- `vendor/ED-318/examples/validate_examples.py`
+- `docs/countries/README.md`
+- `profiles/canada/README.md`
+- `profiles/canada/experimental/README.md`
+- `profiles/canada/official/README.md`
+- `profiles/canada/proposed/README.md`
+- `samples/README.md`
+- `samples/canada-learning-zones.json`

@@ -1,95 +1,74 @@
 # ed318-canada-lab
 
-`ed318-canada-lab` is a neutral, auditable engineering laboratory for studying, validating, implementing, and comparing EUROCAE ED-318 geographical-zone data and future Canadian RPAS geo-awareness profiles.
+`ed318-canada-lab` is an auditable reference and learning laboratory for studying how the ED-318 geographical-zone standard is represented, interpreted, published, and maintained by national aviation authorities.
 
 ## Release status
 
-This repository is **v0.2.1**, the documentation and provenance baseline. It intentionally contains no operational parser, validator, geo-awareness engine, or aircraft-control integration. The Rust binary remains a foundation placeholder. The first planned software capability is JSON Schema validation in a later release.
+This repository is **v0.3.0 — ED-318 Implementation and Strategy Reference Library**.
 
-The project is not a regulatory authority. Nothing here defines ED-318, Transport Canada policy, NAV CANADA policy, or an operational authorization.
+The project is no longer framed primarily as a parser or validator project. Version 0.3.0 establishes the evidence and terminology needed before software design begins. It compares the reference schemas and examples with real national publication strategies.
 
-## Intended readers
+The Rust executable remains a placeholder. This release adds no parser, validator, converter, normalized model, geo-awareness engine, or aircraft integration.
 
-The repository is organized for engineers, regulators, researchers, data publishers, software contributors, and RPAS system integrators who need to understand exactly where information came from and which transformations were applied.
+## Project question
 
-## Core principles
+The central question is:
 
-1. Preserve official and authoritative source material unchanged.
-2. Record provenance and SHA-256 checksums for imported material.
-3. Separate standards material from project implementation.
-4. Separate exact wire-format models from normalized internal models.
-5. Separate national source material from proposed or experimental profiles.
-6. Make validation, transformation, and comparison reproducible.
-7. State uncertainty and compatibility limits explicitly.
+> How do different countries implement and publish geographical-zone information around the same ED-318 standard, and what can Canada learn from those strategies?
 
-## Architecture
+## Evidence layers
 
-The intended processing boundary is:
+The repository distinguishes four evidence layers:
 
-```text
-Official ED-318 JSON
-        ↓
-JSON Schema validation
-        ↓
-Exact ED-318 Rust wire model
-        ↓
-Normalized internal model
-        ↓
-Country profiles and geo-awareness logic
-```
+1. **ED-318 standard** — the published standard itself. The standard text is not redistributed here.
+2. **Reference schemas** — the machine-readable JSON Schema files retained under `schemas/ed-318/`.
+3. **Reference examples** — synthetic examples retained under `vendor/ED-318/examples/`.
+4. **National implementation profiles** — real public datasets and publishing practices studied under `implementations/`.
 
-Canadian assumptions must not be introduced into schema validation or the exact ED-318 wire model. See [`docs/architecture/ARCHITECTURE.md`](docs/architecture/ARCHITECTURE.md).
+These layers must not be described as interchangeable.
+
+## Current implementation profiles
+
+- **Ireland** — a real national GeoJSON publication that closely resembles the reference property model.
+- **Spain** — three real ENAIRE publications demonstrating both nested and flattened ED-318-shaped layouts.
+- **Czech Republic** — a documented future study of a mature AIRAC-based publication ecosystem. No Czech sample is included in this release.
+- **Canada** — a future implementation strategy study, not an official national ED-318 publication.
 
 ## Repository map
 
-- `schemas/ed-318/` — unchanged ED-318 JSON Schema files from the imported upstream archive.
-- `vendor/ED-318/` — unchanged upstream examples, helper files, README, and licence.
-- `datasets/original/` — unmodified authoritative datasets acquired from publishers.
-- `datasets/normalized/` — outputs created by future normalization tools.
-- `datasets/generated/` — synthetic fixtures, demonstrations, and edge cases.
-- `countries/` — country-specific research, classification, and provenance notes.
-- `profiles/canada/` — official, proposed, and experimental Canadian profile material kept in separate status directories.
-- `docs/` — architecture, standards, Canadian, and country-comparison documents.
-- `reports/` — semantic audits and release diff reports.
-- `src/` — Rust implementation; currently a placeholder only.
-- `tests/` — future automated validation, model, normalization, and CLI tests.
+- `reference/` — terminology and navigation for the standard, schemas, and examples.
+- `schemas/ed-318/` — unchanged machine-readable reference schemas.
+- `vendor/ED-318/` — unchanged imported GitHub material and examples.
+- `implementations/ireland/` — profile, provenance, and verified representative sample.
+- `implementations/spain/` — profile, provenance, and verified representative samples.
+- `implementations/czech-republic/` — publication-system study placeholder.
+- `canada/` — questions and design considerations for a future Canadian strategy.
+- `docs/IMPLEMENTATION_COMPARISON.md` — cross-country comparison.
+- `docs/TERMINOLOGY.md` — controlled project vocabulary.
+- `datasets/` — policy for external datasets and derived samples.
+- `reports/` — release audit and diff records.
 
-## Imported ED-318 reference
+## Dataset policy
 
-The uploaded `ED-318-main.zip` archive was imported for this release. The archive did not include `.git` metadata, so an exact upstream commit SHA cannot be proven from the supplied artifact. The release therefore records the archive SHA-256, retrieval date, included paths, exclusions, individual file checksums, and upstream URL in [`vendor/ED-318/PROVENANCE.yaml`](vendor/ED-318/PROVENANCE.yaml).
+Large national datasets are not committed directly. The repository stores:
 
-The imported project is MIT licensed. Its licence is retained at [`vendor/ED-318/LICENSE`](vendor/ED-318/LICENSE).
+- small deterministic samples derived from supplied source files;
+- SHA-256 checksums of the complete source files;
+- publisher and source information where known;
+- exact sample-selection rules;
+- transformation disclosures;
+- download manifests for reacquiring complete datasets.
 
-## Build verification
+A derived sample is never represented as an unchanged official publication.
 
-Run:
+## Safety and authority boundary
 
-```bash
-cargo fmt --check
-cargo check
-cargo clippy --all-targets --all-features -- -D warnings
-cargo test
-```
+This repository is not EUROCAE, an aviation authority, a flight-authorization service, or an operational navigation source. Primary publications and current legal information always take precedence.
 
-At v0.2.1 the test harness is expected to report zero tests. That is intentional for this documentation/provenance release.
+## Start here
 
-## Development sequence
-
-The next planned stages are:
-
-1. JSON Schema validator.
-2. Exact ED-318 Rust wire model.
-3. Normalized internal model.
-4. Country reference baselines.
-5. `inspect`, `validate`, `normalize`, `query`, and `compare` CLI commands.
-6. Canadian geo-awareness research profile.
-
-See [`ROADMAP.md`](ROADMAP.md) for release gates and acceptance criteria.
-
-## Contributing
-
-Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before changing source material, schemas, provenance records, or country classifications.
-
-## Licence
-
-Project-authored material is licensed under the MIT License. Third-party material remains under its original licence and is identified through provenance records. See [`LICENSE`](LICENSE).
+1. Read [`docs/TERMINOLOGY.md`](docs/TERMINOLOGY.md).
+2. Read [`reference/README.md`](reference/README.md).
+3. Compare Ireland and Spain in [`docs/IMPLEMENTATION_COMPARISON.md`](docs/IMPLEMENTATION_COMPARISON.md).
+4. Review the national profiles under `implementations/`.
+5. Review the Canadian questions in [`canada/README.md`](canada/README.md).

@@ -1,48 +1,60 @@
-# Dataset Provenance Specification
+# Provenance Specification
 
 ## Purpose
 
-Every external or generated data artifact must be traceable to its origin and transformation history.
+Provenance records make national implementation studies reproducible without requiring large source datasets to be committed directly.
 
-## Required fields
+## Required source fields
 
-A provenance record should include:
+Record, where available:
 
-- `record_version` — version of this provenance format;
-- `artifact_id` — stable project identifier;
-- `artifact_type` — schema, example, dataset, licence, source archive, or generated output;
-- `country` when applicable;
-- `publisher` or `authority`;
-- `source_url`;
-- `retrieved_at` in ISO 8601 UTC;
-- `source_version` and `commit_sha` when available;
-- `source_archive` and its SHA-256 when acquisition used an archive;
-- `license` and retained licence path;
-- `sha256` for each stored artifact;
-- `official_source` as true, false, or unknown;
-- `modified` as true or false;
-- `transformations` for generated or normalized output;
-- `notes` and unresolved uncertainty.
+- national implementation profile;
+- publisher or authority;
+- authoritative source URL;
+- retrieval date;
+- supplied filename;
+- byte size;
+- SHA-256 checksum;
+- top-level document type;
+- feature count;
+- internal issue and validity metadata;
+- licence or redistribution terms;
+- known uncertainty.
 
-## Integrity rules
+A missing value must be represented as unknown or null rather than guessed.
 
-1. Calculate checksums before interpretation or transformation.
-2. Do not replace original files with normalized output.
-3. Do not call a file unchanged if line endings, encoding, ordering, or content changed.
-4. Name excluded archive entries such as `.DS_Store` files.
-5. Mark unavailable immutable identifiers as unavailable; never infer a commit SHA from a branch-named ZIP.
+## Required sample fields
 
-## Storage rules
+Every derived sample records:
 
-- Original authoritative data: `datasets/original/<country>/<source>/`.
-- Normalized output: `datasets/normalized/<country>/<profile>/`.
-- Synthetic fixtures: `datasets/generated/<purpose>/`.
-- Imported standards/reference repositories: `vendor/<project>/` and, where needed by tools, unchanged schema copies under `schemas/`.
+- repository path;
+- selection method;
+- selected zero-based feature indices;
+- selected identifiers where available;
+- serialization method;
+- sample byte size;
+- sample SHA-256 checksum;
+- explicit derived-sample status.
 
-## Transformation records
+## Source identity
 
-A normalized or generated artifact must record the source checksum, tool name and version, command/options, generation time, transformation profile, validation result, and output checksum.
+Filename alone does not establish source identity. Byte size and SHA-256 together identify the supplied snapshot. A later download with a different checksum is a new snapshot even when the filename is unchanged.
 
-## Verification
+## Transformation record
 
-Release audits should verify that stored checksums match files and that imported source material has not changed unexpectedly.
+For v0.3.0 samples, the approved transformation is:
+
+1. parse the complete source as JSON;
+2. retain listed top-level fields;
+3. select listed features by zero-based index;
+4. serialize as UTF-8 JSON with two-space indentation and a final newline.
+
+This changes container serialization and produces a project-derived artifact. Feature content is not intentionally normalized or corrected.
+
+## Integrity algorithms
+
+SHA-256 is the repository integrity algorithm. Publisher-provided MD5 values may also be recorded as publication metadata, but do not replace SHA-256 for project snapshots.
+
+## Authority and licence
+
+Provenance proves which file was studied; it does not grant redistribution rights. Licence and terms must be verified separately. Where terms are unknown, commit only the smallest justified derived sample and state the uncertainty.

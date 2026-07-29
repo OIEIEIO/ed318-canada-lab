@@ -1,8 +1,8 @@
 [package]
 name = "ed318-canada-lab"
-version = "0.2.1"
+version = "0.3.0"
 edition = "2024"
-description = "Auditable laboratory for ED-318 geographical-zone data and Canadian geo-awareness research"
+description = "Reference laboratory for studying ED-318 national implementations and publishing strategies"
 license = "MIT"
 repository = "https://github.com/OIEIEIO/ed318-canada-lab"
 publish = false

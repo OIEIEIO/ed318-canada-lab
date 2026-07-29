@@ -1,5 +1,5 @@
-# Schemas
+# Reference Schemas
 
-`ed-318/` contains unchanged JSON Schema files copied from the uploaded `ED-318-main.zip` archive for deterministic future validation.
+The files in `ed-318/` are the unchanged machine-readable schema snapshot imported for comparison. They are not country-specific schemas.
 
-Provenance and checksums are recorded in `vendor/ED-318/PROVENANCE.yaml`. Do not edit these files in place. Import upstream changes as a newly identified snapshot and review compatibility first.
+See `../reference/README.md` and `../docs/TERMINOLOGY.md` before describing their authority or relationship to national datasets.

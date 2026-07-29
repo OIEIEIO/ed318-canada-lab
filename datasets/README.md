@@ -1,19 +1,37 @@
-# Datasets
+# Dataset and Sample Policy
 
-This tree separates evidence from project output. See [`PROVENANCE_SPEC.md`](PROVENANCE_SPEC.md) for required records.
+## Large-file policy
 
-## `original/`
+Complete national datasets are generally not committed because they may be large, frequently updated, or subject to redistribution conditions.
 
-Unmodified datasets obtained from official or authoritative publishers. Store provenance and checksums beside each acquisition. Do not manually repair source files.
+## What is stored
 
-## `normalized/`
+Each studied source should have:
 
-Outputs produced by the future normalization pipeline. Each output must identify its source checksum, parser/normalizer version, transformation profile, generation time, and validation result.
+- publisher or attributed authority;
+- source filename;
+- complete-file byte size;
+- complete-file SHA-256 checksum;
+- retrieval date when known;
+- source URL when known;
+- dataset metadata observed inside the file;
+- licence or redistribution status when known;
+- deterministic sample-selection method;
+- list of selected feature identifiers;
+- disclosure of all transformations.
 
-## `generated/`
+## Derived samples
 
-Synthetic datasets, test fixtures, demonstrations, and generated edge cases. Generated data must never be represented as official national data.
+Samples in `implementations/*/samples/` are project-generated subsets. They preserve selected feature objects semantically, but the containing document is newly serialized and therefore has its own checksum.
 
-## Reference repositories
+A sample must not be described as the original national publication.
 
-Standards-related schemas and examples are kept under `schemas/` and `vendor/`, not mixed with national datasets.
+## Reproduction
+
+To reproduce a sample:
+
+1. acquire the exact source file identified by filename, size, and SHA-256;
+2. parse the top-level `FeatureCollection` as JSON;
+3. select the recorded zero-based feature indices;
+4. retain the recorded top-level metadata fields;
+5. serialize as UTF-8, two-space-indented JSON with a final newline.

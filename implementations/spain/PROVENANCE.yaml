@@ -1,0 +1,50 @@
+profile: spain
+publisher: ENAIRE
+publisher_page: https://aip.enaire.es/AIP/UAS-en.html
+retrieval_date: null
+licence_or_redistribution_terms: unverified
+sources:
+  - product: aero
+    supplied_filename: ZGUAS_Aero.json
+    byte_size: 13017686
+    sha256: 08aa4542e3390d2eaa73efaac430583e03f670c7791ec54dcf9c06e656c56a9b
+    top_level_type: FeatureCollection
+    feature_count: 1679
+    geometry_types: [Polygon]
+    sample_path: samples/spain-aero-representative-sample.geojson
+    selected_indices: [0, 839, 1678]
+    selected_identifiers: ["LEBZ45", "LEJC90", "LEZG_TMA"]
+    sample_byte_size: 42122
+    sample_sha256: 934f1a90b3fb9e4975f56b32f5d8faa4652b37b37ad676ed77f88872afab3f2c
+  - product: infra
+    supplied_filename: ZGUAS_Infra.json
+    byte_size: 95114816
+    sha256: b43e4caa8ba754a287dca2c535600f2237076b20c056e9ca7d4eac3581d60966
+    top_level_type: FeatureCollection
+    feature_count: 14104
+    geometry_types: [Polygon]
+    sample_path: samples/spain-infra-representative-sample.geojson
+    selected_indices: [0, 7052, 14103]
+    selected_identifiers: ["INF0325", "INF0224", "INF0424"]
+    sample_byte_size: 68942
+    sample_sha256: e2641a166b90d8953869ff9a23728787caac44cba81a2be9f84a43acf998c9ea
+  - product: urbano
+    supplied_filename: ZGUAS_Urbano.json
+    byte_size: 114775
+    sha256: c6474d782467a8eda4935fd0e60bf8cf9498b6997c24ac233e853be922f747f6
+    top_level_type: FeatureCollection
+    feature_count: 4
+    geometry_types: [Polygon]
+    sample_path: samples/spain-urbano-representative-sample.geojson
+    selected_indices: [0, 1, 2, 3]
+    selected_identifiers: ["NPRIAS", "NPILLA", "NPLONA", "NPDRID"]
+    sample_byte_size: 251008
+    sample_sha256: 0ea0490071f66c9070ffbbe28c8537784e0ba6c7fa389e7a85f1ae24bb7cd320
+sample_policy:
+  selection_method: zero-based feature indices
+  serialization: UTF-8 JSON, two-space indentation, final newline
+  status: derived project samples; not unchanged official publications
+uncertainties:
+  - Retrieval date was not recorded with the supplied archive.
+  - Licence and redistribution terms require verification.
+  - No strict JSON Schema validation was performed in v0.3.0.

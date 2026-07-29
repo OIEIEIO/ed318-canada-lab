@@ -1,93 +1,42 @@
-# Diff Report
+# v0.3.0 Diff Report
 
 ## Comparison
 
-- Baseline: `ed318-canada-lab v0.2.0-foundation`
-- Target: `ed318-canada-lab v0.2.1`
-- Date: 2026-07-29
-- Full unified diff: [`FULL_DIFF.patch`](FULL_DIFF.patch)
+- Baseline: `v0.2.1`
+- Target: `v0.3.0`
+- Modified files: 18
+- Added files: 17
+- Removed files: 19
+- Unchanged non-report files: 25
 
-## Summary
+## Structural change
 
-- Modified existing files: 28
-- Added files: 27
-- Removed files: 0
-- Rust dependencies added: 0
-- Runtime features added: 0
+The country/profile scaffold was replaced by an evidence-first structure:
 
-## Modified files
+- `reference/`
+- `implementations/ireland/`
+- `implementations/spain/`
+- `implementations/czech-republic/`
+- `canada/`
+- cross-country comparison and terminology documents
 
-- `CHANGELOG.md`
-- `CONTRIBUTING.md`
-- `Cargo.lock`
-- `Cargo.toml`
-- `LICENSE`
-- `PROJECT_PHILOSOPHY.md`
-- `README.md`
-- `ROADMAP.md`
-- `countries/PROVENANCE_TEMPLATE.yaml`
-- `countries/README.md`
-- `countries/canada/README.md`
-- `countries/czech-republic/README.md`
-- `countries/ireland/README.md`
-- `countries/spain/README.md`
-- `countries/united-states/README.md`
-- `datasets/README.md`
-- `docs/architecture/README.md`
-- `docs/canada/README.md`
-- `docs/countries/README.md`
-- `docs/standards/README.md`
-- `profiles/canada/README.md`
-- `reports/README.md`
-- `samples/README.md`
-- `schemas/README.md`
-- `src/main.rs`
-- `tests/README.md`
-- `tools/README.md`
-- `vendor/README.md`
+Large national source files were not committed. Four deterministic derived samples and provenance manifests were added.
 
-## Added files
+## Software change
 
-- `datasets/PROVENANCE_SPEC.md`
-- `docs/architecture/ARCHITECTURE.md`
-- `docs/countries/COUNTRY_TEMPLATE.md`
-- `docs/standards/ED-318.md`
-- `schemas/ed-318/Schema_GeoJSONGeometries.json`
-- `schemas/ed-318/Schema_GeoZoneAuthority.json`
-- `schemas/ed-318/Schema_GeoZoneCollectionMetadata.json`
-- `schemas/ed-318/Schema_GeoZoneDataTypes.json`
-- `schemas/ed-318/Schema_GeoZoneProperties.json`
-- `schemas/ed-318/Schema_GeoZoneTimePeriod.json`
-- `schemas/ed-318/Schema_GeoZones.json`
-- `schemas/ed-318/Schema_LayeredGeoJSON.json`
-- `vendor/ED-318/LICENSE`
-- `vendor/ED-318/PROVENANCE.yaml`
-- `vendor/ED-318/README.md`
-- `vendor/ED-318/examples/Dockerfile`
-- `vendor/ED-318/examples/Example_Collection.json`
-- `vendor/ED-318/examples/Example_GeoZone_2_Layers.json`
-- `vendor/ED-318/examples/Example_GeoZone_Circle.json`
-- `vendor/ED-318/examples/Example_GeoZone_with_extension.json`
-- `vendor/ED-318/examples/InvalidExample_GeoZone_2_Layers.json`
-- `vendor/ED-318/examples/PartialExample_GeoZoneProperties.json`
-- `vendor/ED-318/examples/PartialExample_TimePeriod.json`
-- `vendor/ED-318/examples/PartialExample_ZoneAuthority.json`
-- `vendor/ED-318/examples/PartialExample_featureGeoJSON.json`
-- `vendor/ED-318/examples/requirements.txt`
-- `vendor/ED-318/examples/validate_examples.py`
+The package version and placeholder message changed from v0.2.1 to v0.3.0. No parser, validator, normalizer, or other runtime capability was added.
 
-## Removed files
+## Imported material
 
-- None.
+All files under `schemas/ed-318/` and `vendor/ED-318/` remain byte-for-byte unchanged from v0.2.1.
 
-## Semantic diff
+## Removed concepts
 
-The release changes project documentation, provenance, licensing, release metadata, and imported reference material. The only Rust source change is formatting of the existing placeholder. No parser, validator, CLI command, data model, or query behaviour is introduced.
+The following v0.2.1 framing was retired:
 
-## Imported content
+- validator-first roadmap;
+- country-specific schema implication;
+- premature Canadian profile hierarchy;
+- synthetic Canada sample as a primary reference dataset.
 
-The added ED-318 files are copied byte-for-byte from `ED-318-main.zip`, except `.DS_Store` operating-system metadata, which was deliberately excluded and recorded in provenance.
-
-## Verification status
-
-JSON parsing and byte-for-byte import checks passed. Rust commands were not run because `cargo` was unavailable in the release environment. See `SEMANTIC_AUDIT.md` for the complete status.
+See `MODIFIED_FILES.md` for the complete path inventory and `FULL_DIFF.patch` for the textual patch. The patch intentionally excludes itself to avoid recursive content.

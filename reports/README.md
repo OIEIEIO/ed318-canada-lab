@@ -1,3 +1,3 @@
-# Reports
+# Release Reports
 
-Release audit, validation, compatibility, and comparison reports are stored here. Reports must identify their baseline, reviewed files, checks performed, findings, limitations, and date.
+This directory contains the v0.3.0 semantic audit, modified-file inventory, diff summary, and complete patch against accepted baseline v0.2.1.
